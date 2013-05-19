@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B9C8F70F172C29BC00F888E4"
-               BuildableName = "libFeedParser.a"
-               BlueprintName = "FeedParser"
-               ReferencedContainer = "container:Friendsy.xcodeproj">
+               BlueprintIdentifier = "B9B4634A172BE1D900A37FE0"
+               BuildableName = "Friendsy.app"
+               BlueprintName = "Friendcy"
+               ReferencedContainer = "container:Friendcy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,6 +29,15 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B9B4634A172BE1D900A37FE0"
+            BuildableName = "Friendsy.app"
+            BlueprintName = "Friendcy"
+            ReferencedContainer = "container:Friendcy.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -39,6 +48,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B9B4634A172BE1D900A37FE0"
+            BuildableName = "Friendsy.app"
+            BlueprintName = "Friendcy"
+            ReferencedContainer = "container:Friendcy.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -48,6 +66,15 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B9B4634A172BE1D900A37FE0"
+            BuildableName = "Friendsy.app"
+            BlueprintName = "Friendcy"
+            ReferencedContainer = "container:Friendcy.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

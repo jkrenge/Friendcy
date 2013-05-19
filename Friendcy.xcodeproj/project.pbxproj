@@ -76,14 +76,14 @@
 		B93A5A34172C09B70056B4AE /* MWFeedParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWFeedParser.m; sourceTree = "<group>"; };
 		B9891578172D2080004AD00B /* FeedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedCell.h; sourceTree = "<group>"; };
 		B9891579172D2080004AD00B /* FeedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedCell.m; sourceTree = "<group>"; };
-		B9B4634B172BE1D900A37FE0 /* Friendsy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Friendsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9B4634B172BE1D900A37FE0 /* Friendcy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Friendcy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9B4634E172BE1D900A37FE0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B9B46350172BE1D900A37FE0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B9B46352172BE1D900A37FE0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		B9B46356172BE1D900A37FE0 /* Friendsy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Friendsy-Info.plist"; sourceTree = "<group>"; };
+		B9B46356172BE1D900A37FE0 /* Friendcy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Friendcy-Info.plist"; sourceTree = "<group>"; };
 		B9B46358172BE1D900A37FE0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B9B4635A172BE1D900A37FE0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B9B4635C172BE1D900A37FE0 /* Friendsy-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Friendsy-Prefix.pch"; sourceTree = "<group>"; };
+		B9B4635C172BE1D900A37FE0 /* Friendcy-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Friendcy-Prefix.pch"; sourceTree = "<group>"; };
 		B9B4635D172BE1D900A37FE0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B9B4635E172BE1D900A37FE0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B9B46360172BE1DA00A37FE0 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -172,7 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				B91A9A9B172D8827007283DD /* Artwork */,
-				B9B46354172BE1D900A37FE0 /* Friendsy */,
+				B9B46354172BE1D900A37FE0 /* Friendcy */,
 				B9B4634D172BE1D900A37FE0 /* Frameworks */,
 				B9B4634C172BE1D900A37FE0 /* Products */,
 			);
@@ -181,7 +181,7 @@
 		B9B4634C172BE1D900A37FE0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B9B4634B172BE1D900A37FE0 /* Friendsy.app */,
+				B9B4634B172BE1D900A37FE0 /* Friendcy.app */,
 				B9C8F710172C29BC00F888E4 /* libFeedParser.a */,
 			);
 			name = Products;
@@ -203,7 +203,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B9B46354172BE1D900A37FE0 /* Friendsy */ = {
+		B9B46354172BE1D900A37FE0 /* Friendcy */ = {
 			isa = PBXGroup;
 			children = (
 				B9B4637B172BE28800A37FE0 /* FriendAdder */,
@@ -213,16 +213,17 @@
 				B93A5A2C172C01630056B4AE /* Defines.h */,
 				B9B46355172BE1D900A37FE0 /* Supporting Files */,
 			);
+			name = Friendcy;
 			path = Friendsy;
 			sourceTree = "<group>";
 		};
 		B9B46355172BE1D900A37FE0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				B9B46356172BE1D900A37FE0 /* Friendsy-Info.plist */,
+				B9B46356172BE1D900A37FE0 /* Friendcy-Info.plist */,
 				B9B46357172BE1D900A37FE0 /* InfoPlist.strings */,
 				B9B4635A172BE1D900A37FE0 /* main.m */,
-				B9B4635C172BE1D900A37FE0 /* Friendsy-Prefix.pch */,
+				B9B4635C172BE1D900A37FE0 /* Friendcy-Prefix.pch */,
 				B9B46360172BE1DA00A37FE0 /* Default.png */,
 				B9B46362172BE1DA00A37FE0 /* Default@2x.png */,
 				B9B46364172BE1DA00A37FE0 /* Default-568h@2x.png */,
@@ -291,9 +292,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B9B4634A172BE1D900A37FE0 /* Friendsy */ = {
+		B9B4634A172BE1D900A37FE0 /* Friendcy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B9B46374172BE1DA00A37FE0 /* Build configuration list for PBXNativeTarget "Friendsy" */;
+			buildConfigurationList = B9B46374172BE1DA00A37FE0 /* Build configuration list for PBXNativeTarget "Friendcy" */;
 			buildPhases = (
 				B9B46347172BE1D900A37FE0 /* Sources */,
 				B9B46348172BE1D900A37FE0 /* Frameworks */,
@@ -303,9 +304,9 @@
 			);
 			dependencies = (
 			);
-			name = Friendsy;
+			name = Friendcy;
 			productName = Friendsy;
-			productReference = B9B4634B172BE1D900A37FE0 /* Friendsy.app */;
+			productReference = B9B4634B172BE1D900A37FE0 /* Friendcy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B9C8F70F172C29BC00F888E4 /* FeedParser */ = {
@@ -334,7 +335,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Julian Krenge";
 			};
-			buildConfigurationList = B9B46346172BE1D900A37FE0 /* Build configuration list for PBXProject "Friendsy" */;
+			buildConfigurationList = B9B46346172BE1D900A37FE0 /* Build configuration list for PBXProject "Friendcy" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -346,7 +347,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B9B4634A172BE1D900A37FE0 /* Friendsy */,
+				B9B4634A172BE1D900A37FE0 /* Friendcy */,
 				B9C8F70F172C29BC00F888E4 /* FeedParser */,
 			);
 		};
@@ -478,13 +479,13 @@
 					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Friendsy/Friendsy-Prefix.pch";
-				INFOPLIST_FILE = "Friendsy/Friendsy-Info.plist";
+				GCC_PREFIX_HEADER = "Friendsy/Friendcy-Prefix.pch";
+				INFOPLIST_FILE = "Friendsy/Friendcy-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Friendcy;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -497,13 +498,13 @@
 					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Friendsy/Friendsy-Prefix.pch";
-				INFOPLIST_FILE = "Friendsy/Friendsy-Info.plist";
+				GCC_PREFIX_HEADER = "Friendsy/Friendcy-Prefix.pch";
+				INFOPLIST_FILE = "Friendsy/Friendcy-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Friendcy;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -537,7 +538,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B9B46346172BE1D900A37FE0 /* Build configuration list for PBXProject "Friendsy" */ = {
+		B9B46346172BE1D900A37FE0 /* Build configuration list for PBXProject "Friendcy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B9B46372172BE1DA00A37FE0 /* Debug */,
@@ -546,7 +547,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B9B46374172BE1DA00A37FE0 /* Build configuration list for PBXNativeTarget "Friendsy" */ = {
+		B9B46374172BE1DA00A37FE0 /* Build configuration list for PBXNativeTarget "Friendcy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B9B46375172BE1DA00A37FE0 /* Debug */,
