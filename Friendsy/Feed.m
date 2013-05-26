@@ -312,34 +312,62 @@
 - (void)didSelectRowAtIndexPath:(NSIndexPath*)indexPath withAction:(ActionKey)action
 {
     
-    // get item
-    
     FeedItem *item = [feedItems objectAtIndex:indexPath.row];
     
-    if (action == ActionKeyShowDetails) {
-        
-        // prepare browser
-        
-        if (webBrowser == nil) {
-            webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:item.url]];
-            [webBrowser setMode:TSMiniWebBrowserModeNavigation];
-            [webBrowser setBarStyle:UIBarStyleDefault];
+    switch (action) {
+        case ActionKeyShowDetails:
+            [self presentDetailsForItem:item];
+            break;
             
-            [webBrowser setShowURLStringOnActionSheetTitle:YES];
-            [webBrowser setShowPageTitleOnTitleBar:YES];
-            [webBrowser setShowActionButton:YES];
-            [webBrowser setShowReloadButton:NO];
-        }
-        
-        // load required content
-        
-        [webBrowser loadURL:[NSURL URLWithString:item.url]];
-        
-        // push view
-        
-        [self.navigationController pushViewController:webBrowser animated:YES];
-        
+        case ActionKeyShowSharingOptions:
+            [self presentSharingOptionsForItem:item];
+            break;
+            
+        default:
+            break;
     }
+    
+}
+
+#pragma mark - Navigation
+
+- (void)presentDetailsForItem:(FeedItem*)item
+{
+    
+    // prepare browser
+    
+    if (webBrowser == nil) {
+        webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:item.url]];
+        [webBrowser setMode:TSMiniWebBrowserModeNavigation];
+        [webBrowser setBarStyle:UIBarStyleDefault];
+        
+        [webBrowser setShowURLStringOnActionSheetTitle:YES];
+        [webBrowser setShowPageTitleOnTitleBar:YES];
+        [webBrowser setShowActionButton:YES];
+        [webBrowser setShowReloadButton:NO];
+    }
+    
+    // load required content
+    
+    [webBrowser loadURL:[NSURL URLWithString:item.url]];
+    
+    // push view
+    
+    [self.navigationController pushViewController:webBrowser animated:YES];
+    
+}
+
+- (void)presentSharingOptionsForItem:(FeedItem*)item
+{
+    
+    NSString *shareText = item.title;
+    NSString *shareLink = item.url;
+    NSArray *activityItems = @[shareText, shareLink];
+    
+    UIActivityViewController *shareOptions = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+    [shareOptions setExcludedActivityTypes:@[UIActivityTypeAssignToContact, UIActivityTypePostToWeibo, UIActivityTypePrint]];
+    
+    [self presentViewController:shareOptions animated:YES completion:nil];
     
 }
 

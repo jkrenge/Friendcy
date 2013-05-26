@@ -12,6 +12,8 @@
 
 #import "BButton.h"
 
+#pragma mark - Defines
+
 #define kSpaceAboveImage 30
 #define kInfoOffset 10
 #define kBorderOffset 4
@@ -23,11 +25,13 @@
 #define kButtonSpace 10
 
 #define kHidingOffset -200
-#define kHiddenOpacity 0.5f
+#define kHiddenOpacity 0.1f
 #define kAnimDuration 0.25f
 
 #define kKeyOfRevealAnimation @"drawerRevealAnimation"
 #define kKeyOfHideAnimation @"drawerHideAnimation"
+
+#pragma mark - Init
 
 @implementation FeedCell
 
@@ -42,10 +46,9 @@
         
         topDrawer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, gFeedCellHeight)];
         [self loadTopDrawer];
-        
-        // add drawer to cell
-        
         [self.viewForBaselineLayout addSubview:topDrawer];
+        
+        [self loadCellInformation];
         
         // add interactivity
         
@@ -64,7 +67,7 @@
     return self;
 }
 
-#pragma mark - Interactivity
+#pragma mark - Drawer interaction
 
 - (void)revealSubDrawer
 {
@@ -84,26 +87,14 @@
         CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
         [fadeInAnimation setToValue:[NSNumber numberWithFloat:1]];
         
-        // Set up path movement
-        
-        int bottomDrawerStartX = 320+kHidingOffset;
-        
-        CABasicAnimation *moveInAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
-        [moveInAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(bottomDrawerStartX/2 + bottomDrawerStartX, gFeedCellHeight/2)]];
-        
         // Group animations
         
         CAAnimationGroup *groupIn = [CAAnimationGroup animation];
         groupIn.fillMode = kCAFillModeForwards;
         groupIn.removedOnCompletion = NO;
-        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, moveInAnimation, nil]];
+        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, nil]];
         groupIn.duration = kAnimDuration;
         groupIn.delegate = self;
-        
-        // Set up fade out effect
-        
-        CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-        [fadeOutAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
         
         // Set up path movement
         
@@ -115,7 +106,7 @@
         CAAnimationGroup *groupOut = [CAAnimationGroup animation];
         groupOut.fillMode = kCAFillModeForwards;
         groupOut.removedOnCompletion = NO;
-        [groupOut setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, moveOutAnimation, nil]];
+        [groupOut setAnimations:[NSArray arrayWithObjects:moveOutAnimation, nil]];
         groupOut.duration = kAnimDuration;
         groupOut.delegate = self;
         
@@ -143,24 +134,14 @@
         CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
         [fadeInAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
         
-        // Set up path movement
-        
-        CABasicAnimation *moveInAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
-        [moveInAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(320+bottomDrawer.bounds.size.width/2, gFeedCellHeight/2)]];
-        
         // Group animations
         
         CAAnimationGroup *groupIn = [CAAnimationGroup animation];
         groupIn.fillMode = kCAFillModeForwards;
         groupIn.removedOnCompletion = NO;
-        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, moveInAnimation, nil]];
+        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, nil]];
         groupIn.duration = kAnimDuration;
         groupIn.delegate = self;
-        
-        // Set up fade in effect
-        
-        CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-        [fadeOutAnimation setToValue:[NSNumber numberWithFloat:1]];
         
         // Set up path movement
         
@@ -172,7 +153,7 @@
         CAAnimationGroup *groupOut = [CAAnimationGroup animation];
         groupOut.fillMode = kCAFillModeForwards;
         groupOut.removedOnCompletion = NO;
-        [groupOut setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, moveOutAnimation, nil]];
+        [groupOut setAnimations:[NSArray arrayWithObjects:moveOutAnimation, nil]];
         groupOut.duration = kAnimDuration;
         groupOut.delegate = self;
         
@@ -194,16 +175,16 @@
     if (flag && anim == [topDrawer.layer animationForKey:kKeyOfRevealAnimation]) {
         
         [topDrawer setFrame:CGRectMake(kHidingOffset, 0, 320, gFeedCellHeight)];
-        [bottomDrawer setFrame:CGRectMake(320+kHidingOffset, 0, bottomDrawer.bounds.size.width, bottomDrawer.bounds.size.height)];
         
     } else if (flag && anim == [topDrawer.layer animationForKey:kKeyOfHideAnimation]) {
         
         [topDrawer setFrame:CGRectMake(0, 0, 320, gFeedCellHeight)];
-        [bottomDrawer setFrame:CGRectMake(320, 0, bottomDrawer.bounds.size.width, bottomDrawer.bounds.size.height)];
         
     }
     
 }
+
+#pragma mark - Other interactivity
 
 - (void)showFullscreenImage
 {
@@ -238,13 +219,21 @@
     
 }
 
-#pragma mark - Jumps
+#pragma mark - Navigation
 
-- (void)pushDetailView
+- (void)presentDetails
 {
     
     NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
     [_delegate didSelectRowAtIndexPath:indexPath withAction:ActionKeyShowDetails];
+    
+}
+
+- (void)presentSharingOptions
+{
+    
+    NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
+    [_delegate didSelectRowAtIndexPath:indexPath withAction:ActionKeyShowSharingOptions];
     
 }
 
@@ -263,50 +252,12 @@
 
 #pragma mark - Prepare content of cell
 
-- (void)loadTopDrawer
+- (void)loadCellInformation
 {
     
     UIFont *authorFont = [UIFont fontWithName:@"Helvetica-Bold" size:14.];
     UIFont *dateFont = [UIFont fontWithName:@"Helvetica" size:14.];
-    UIFont *titleFont = [UIFont fontWithName:@"Helvetica" size:17.];
-    
-    // prepare image
-    
-    CALayer *darkBorder = [CALayer layer];
-    [darkBorder setFrame:CGRectMake(kBorderOffset, kBorderOffset+kSpaceAboveImage, 320-2*kBorderOffset, gFeedCellHeight-kSpaceAboveImage-kBorderOffset*2)];
-    [darkBorder setBackgroundColor:[UIColor colorWithRed:.7 green:.7 blue:.7 alpha:1.].CGColor];
-    
-    CALayer *lightBorder = [CALayer layer];
-    [lightBorder setFrame:CGRectMake(kBorderOffset+1, kBorderOffset+1+kSpaceAboveImage, darkBorder.frame.size.width-2, darkBorder.frame.size.height-2)];
-    [lightBorder setBackgroundColor:[UIColor colorWithRed:.96 green:.96 blue:.96 alpha:1.].CGColor];
-    
     int imageBorder = kBorderOffset + 1 + kBorderWidth;
-    image = [[UIImageView alloc] initWithFrame:CGRectMake(imageBorder, imageBorder+kSpaceAboveImage, 320-2*imageBorder, gFeedCellHeight-kSpaceAboveImage-2*imageBorder)];
-    [image setClipsToBounds:YES];
-    [image setContentMode:UIViewContentModeScaleAspectFill];
-    
-    [darkBorder setShadowColor:[UIColor darkGrayColor].CGColor];
-    [darkBorder setShadowOffset:CGSizeMake(0., 1.)];
-    [darkBorder setShadowRadius:2.];
-    [darkBorder setShadowOpacity:.4];
-    
-    CGRect shadowFrame = darkBorder.bounds;
-    CGPathRef shadowPath = [UIBezierPath bezierPathWithRect:shadowFrame].CGPath;
-    [darkBorder setShadowPath:shadowPath];
-    
-    [topDrawer.layer addSublayer:darkBorder];
-    [topDrawer.layer addSublayer:lightBorder];
-    [topDrawer addSubview:image];
-    
-    // prepare title
-    
-    title = [[UILabel alloc] initWithFrame:CGRectMake(image.frame.origin.x, image.frame.origin.y+image.frame.size.height-kHeightOfTitle, image.frame.size.width, kHeightOfTitle)];
-    [title setBackgroundColor:[UIColor colorWithRed:.98 green:.98 blue:.98 alpha:.6]];
-    [title setShadowColor:[UIColor whiteColor]];
-    [title setShadowOffset:CGSizeMake(1, 1)];
-    [title setFont:titleFont];
-    
-    [topDrawer addSubview:title];
     
     // prepare author badge
     
@@ -333,8 +284,8 @@
     CGPathRef shadowPath2 = [UIBezierPath bezierPathWithRect:shadowFrame2].CGPath;
     [authorBorder setShadowPath:shadowPath2];
     
-    [topDrawer.layer addSublayer:authorBorder];
-    [topDrawer addSubview:author];
+    [self.viewForBaselineLayout.layer addSublayer:authorBorder];
+    [self.viewForBaselineLayout addSubview:author];
     
     // prepare date
     
@@ -344,7 +295,52 @@
     [date setTextAlignment:NSTextAlignmentRight];
     [date setBackgroundColor:[UIColor clearColor]];
     
-    [topDrawer addSubview:date];
+    [self.viewForBaselineLayout addSubview:date];
+    
+}
+
+- (void)loadTopDrawer
+{
+
+    UIFont *titleFont = [UIFont fontWithName:@"Helvetica" size:17.];
+    int imageBorder = kBorderOffset + 1 + kBorderWidth;
+    
+    // prepare image
+    
+    CALayer *darkBorder = [CALayer layer];
+    [darkBorder setFrame:CGRectMake(kBorderOffset, kBorderOffset+kSpaceAboveImage, 320-2*kBorderOffset, gFeedCellHeight-kSpaceAboveImage-kBorderOffset*2)];
+    [darkBorder setBackgroundColor:[UIColor colorWithRed:.7 green:.7 blue:.7 alpha:1.].CGColor];
+    
+    CALayer *lightBorder = [CALayer layer];
+    [lightBorder setFrame:CGRectMake(kBorderOffset+1, kBorderOffset+1+kSpaceAboveImage, darkBorder.frame.size.width-2, darkBorder.frame.size.height-2)];
+    [lightBorder setBackgroundColor:[UIColor colorWithRed:.96 green:.96 blue:.96 alpha:1.].CGColor];
+    
+    image = [[UIImageViewModeScaleAspect alloc] initWithFrame:CGRectMake(imageBorder, imageBorder+kSpaceAboveImage, 320-2*imageBorder, gFeedCellHeight-kSpaceAboveImage-2*imageBorder)];
+    [image setClipsToBounds:YES];
+    [image setContentMode:UIViewContentModeScaleAspectFill];
+    
+    [darkBorder setShadowColor:[UIColor darkGrayColor].CGColor];
+    [darkBorder setShadowOffset:CGSizeMake(0., 1.)];
+    [darkBorder setShadowRadius:2.];
+    [darkBorder setShadowOpacity:.4];
+    
+    CGRect shadowFrame = darkBorder.bounds;
+    CGPathRef shadowPath = [UIBezierPath bezierPathWithRect:shadowFrame].CGPath;
+    [darkBorder setShadowPath:shadowPath];
+    
+    [topDrawer.layer addSublayer:darkBorder];
+    [topDrawer.layer addSublayer:lightBorder];
+    [topDrawer addSubview:image];
+    
+    // prepare title
+    
+    title = [[UILabel alloc] initWithFrame:CGRectMake(image.frame.origin.x, image.frame.origin.y+image.frame.size.height-kHeightOfTitle, image.frame.size.width, kHeightOfTitle)];
+    [title setBackgroundColor:[UIColor colorWithRed:.98 green:.98 blue:.98 alpha:.6]];
+    [title setShadowColor:[UIColor whiteColor]];
+    [title setShadowOffset:CGSizeMake(1, 1)];
+    [title setFont:titleFont];
+    
+    [topDrawer addSubview:title];
     
     // enable interaction
     
@@ -358,7 +354,7 @@
     
     int availableWidth = 320 - (320+kHidingOffset);
     
-    bottomDrawer = [[UIView alloc] initWithFrame:CGRectMake(320, 0, availableWidth, gFeedCellHeight)];
+    bottomDrawer = [[UIView alloc] initWithFrame:CGRectMake(320-availableWidth-40, 0, availableWidth, gFeedCellHeight)];
     [bottomDrawer setAlpha:kHiddenOpacity];
     
     // calculate button frames
@@ -377,16 +373,17 @@
     
     BButton *detailBtn = [[BButton alloc] initWithFrame:[[btnRects objectAtIndex:0] CGRectValue] type:BButtonTypeDefault];
     [detailBtn setTitle:@"Show details" forState:UIControlStateNormal];
-    [detailBtn addTarget:self action:@selector(pushDetailView) forControlEvents:UIControlEventTouchUpInside];
+    [detailBtn addTarget:self action:@selector(presentDetails) forControlEvents:UIControlEventTouchUpInside];
     [bottomDrawer addSubview:detailBtn];
     
     BButton *shareBtn = [[BButton alloc] initWithFrame:[[btnRects objectAtIndex:1] CGRectValue] type:BButtonTypeDefault];
     [shareBtn setTitle:@"Share this" forState:UIControlStateNormal];
+    [shareBtn addTarget:self action:@selector(presentSharingOptions) forControlEvents:UIControlEventTouchUpInside];
     [bottomDrawer addSubview:shareBtn];
     
     // add bottom drawer to cell
     
-    [self.viewForBaselineLayout addSubview:bottomDrawer];
+    [self.viewForBaselineLayout insertSubview:bottomDrawer belowSubview:topDrawer];
     
     // add interactivity to bottom drawer
     
@@ -395,6 +392,9 @@
     UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
     [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
     [bottomDrawer addGestureRecognizer:swipeRightRec];
+    
+    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+    [bottomDrawer addGestureRecognizer:tapRec];
     
 }
 

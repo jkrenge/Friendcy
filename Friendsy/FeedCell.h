@@ -11,11 +11,13 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "GGFullScreenImageViewController.h"
+#import "UIImageViewModeScaleAspect.h"
 
 #import "FeedItem.h"
 
 typedef enum {
-    ActionKeyShowDetails = 0
+    ActionKeyShowDetails = 0,
+    ActionKeyShowSharingOptions = 1
 } ActionKey;
 
 @protocol FeedCellActionDelegate <NSObject>
@@ -26,11 +28,12 @@ typedef enum {
 {
     
     BOOL _bottomDrawerIsRevealed;
+    CGRect imageOrigin;
     
     UIView *topDrawer;
     UIView *bottomDrawer;
     
-    UIImageView *image;
+    UIImageViewModeScaleAspect *image;
     UILabel *title;
     UILabel *date;
     UILabel *author;

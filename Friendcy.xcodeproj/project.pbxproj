@@ -268,6 +268,15 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		B95709841752577100531808 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B9C8F78E172C3A5E00F888E4 /* FeedItem.h */,
+				B9C8F78F172C3A5E00F888E4 /* FeedItem.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		B9B46342172BE1D900A37FE0 = {
 			isa = PBXGroup;
 			children = (
@@ -339,12 +348,11 @@
 		B9B46377172BE21F00A37FE0 /* Feed */ = {
 			isa = PBXGroup;
 			children = (
+				B95709841752577100531808 /* Model */,
 				B9B46378172BE24100A37FE0 /* Feed.h */,
 				B9B46379172BE24100A37FE0 /* Feed.m */,
 				B9891578172D2080004AD00B /* FeedCell.h */,
 				B9891579172D2080004AD00B /* FeedCell.m */,
-				B9C8F78E172C3A5E00F888E4 /* FeedItem.h */,
-				B9C8F78F172C3A5E00F888E4 /* FeedItem.m */,
 			);
 			name = Feed;
 			sourceTree = "<group>";
