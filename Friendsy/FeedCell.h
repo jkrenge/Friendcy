@@ -14,8 +14,18 @@
 
 #import "FeedItem.h"
 
+typedef enum {
+    ActionKeyShowDetails = 0
+} ActionKey;
+
+@protocol FeedCellActionDelegate <NSObject>
+- (void)didSelectRowAtIndexPath:(NSIndexPath*)indexPath withAction:(ActionKey)action;
+@end
+
 @interface FeedCell : UITableViewCell
 {
+    
+    BOOL _bottomDrawerIsRevealed;
     
     UIView *topDrawer;
     UIView *bottomDrawer;
@@ -26,6 +36,8 @@
     UILabel *author;
     
 }
+
+@property (nonatomic, assign) id<FeedCellActionDelegate> delegate;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
 

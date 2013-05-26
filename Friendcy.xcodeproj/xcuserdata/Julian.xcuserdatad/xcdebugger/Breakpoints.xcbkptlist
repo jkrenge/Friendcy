@@ -30,11 +30,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Friendsy/Feed.m"
-         timestampString = "388963896.169502"
+         timestampString = "391261415.095944"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "179"
-         endingLineNumber = "179"
+         startingLineNumber = "191"
+         endingLineNumber = "191"
          landmarkName = "-feedParserDidFinish:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -43,11 +43,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Friendsy/Feed.m"
-         timestampString = "388963896.169502"
+         timestampString = "391261415.095944"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "199"
-         endingLineNumber = "199"
+         startingLineNumber = "211"
+         endingLineNumber = "211"
          landmarkName = "-feedParserDidFinish:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -56,11 +56,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Friendsy/Feed.m"
-         timestampString = "388963896.169502"
+         timestampString = "391261415.095944"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "184"
-         endingLineNumber = "184"
+         startingLineNumber = "196"
+         endingLineNumber = "196"
          landmarkName = "-feedParserDidFinish:"
          landmarkType = "5">
       </FileBreakpoint>

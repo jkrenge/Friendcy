@@ -9,14 +9,16 @@
 #import <UIKit/UIKit.h>
 
 #import "FriendAdder.h"
+#import "FeedCell.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "MWFeedParser.h"
+#import "TSMiniWebBrowser.h"
 
 #import "NSString+HTML.h"
 #import "NSDate+InternetDateTime.h"
 
-@interface Feed : UITableViewController <FriendAdderDelegate, MWFeedParserDelegate>
+@interface Feed : UITableViewController <FriendAdderDelegate, MWFeedParserDelegate, FeedCellActionDelegate>
 {
     
     NSDateFormatter *dateFormatter;
@@ -26,6 +28,9 @@
     NSMutableArray *feeds;
     NSMutableArray *feedChecklist;
     NSMutableArray *feedItems;
+    
+    UINavigationController *webBrowserContainer;
+    TSMiniWebBrowser *webBrowser;
     
 }
 

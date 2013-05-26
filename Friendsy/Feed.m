@@ -8,7 +8,6 @@
 
 #import "Feed.h"
 
-#import "FeedCell.h"
 #import "FeedItem.h"
 
 #import "Defines.h"
@@ -128,6 +127,19 @@
     
     ALog(@"");
     
+    // break if the user didn't add any feeds to the stream
+    
+    if (feeds.count == 0) {
+        
+        UIAlertView *noFeedsAlert = [[UIAlertView alloc] initWithTitle:@"No feeds" message:@"You didn't add anyone yet!" delegate:nil cancelButtonTitle:@"Oh, okay" otherButtonTitles:nil];
+        [noFeedsAlert show];
+        
+        return;
+        
+    }
+    
+    // add all feeds to the parser queue
+    
     feedItems = [[NSMutableArray alloc] init];
     feedChecklist = [feeds mutableCopy];
     
@@ -232,6 +244,8 @@
     FeedCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (cell == nil) cell = [[FeedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     
+    [cell setDelegate:self];
+    
     // fill cell
 
     FeedItem *item = [feedItems objectAtIndex:indexPath.row];
@@ -293,7 +307,39 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    // this is handled by the cell itself
+}
+
+- (void)didSelectRowAtIndexPath:(NSIndexPath*)indexPath withAction:(ActionKey)action
+{
+    
+    // get item
+    
+    FeedItem *item = [feedItems objectAtIndex:indexPath.row];
+    
+    if (action == ActionKeyShowDetails) {
+        
+        // prepare browser
+        
+        if (webBrowser == nil) {
+            webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:item.url]];
+            [webBrowser setMode:TSMiniWebBrowserModeNavigation];
+            [webBrowser setBarStyle:UIBarStyleDefault];
+            
+            [webBrowser setShowURLStringOnActionSheetTitle:YES];
+            [webBrowser setShowPageTitleOnTitleBar:YES];
+            [webBrowser setShowActionButton:YES];
+            [webBrowser setShowReloadButton:NO];
+        }
+        
+        // load required content
+        
+        [webBrowser loadURL:[NSURL URLWithString:item.url]];
+        
+        // push view
+        
+        [self.navigationController pushViewController:webBrowser animated:YES];
+        
+    }
     
 }
 

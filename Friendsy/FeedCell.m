@@ -7,10 +7,10 @@
 //
 
 #import "FeedCell.h"
-
 #import "Defines.h"
-
 #import "AppDelegate.h"
+
+#import "BButton.h"
 
 #define kSpaceAboveImage 30
 #define kInfoOffset 10
@@ -18,7 +18,16 @@
 #define kBorderWidth 6
 #define kHeightOfTitle 34
 #define kWidthOfDate 210
-#define kHiddenOpacity 0.3
+
+#define kButtonHeight 40
+#define kButtonSpace 10
+
+#define kHidingOffset -200
+#define kHiddenOpacity 0.5f
+#define kAnimDuration 0.25f
+
+#define kKeyOfRevealAnimation @"drawerRevealAnimation"
+#define kKeyOfHideAnimation @"drawerHideAnimation"
 
 @implementation FeedCell
 
@@ -26,6 +35,8 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        
+        _bottomDrawerIsRevealed = NO;
         
         // prepare drawer
         
@@ -45,6 +56,10 @@
         [swipeLeftRec setDirection:UISwipeGestureRecognizerDirectionLeft];
         [topDrawer addGestureRecognizer:swipeLeftRec];
         
+        UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+        [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
+        [topDrawer addGestureRecognizer:swipeRightRec];
+        
     }
     return self;
 }
@@ -54,36 +69,139 @@
 - (void)revealSubDrawer
 {
     
-    // Set up fade out effect
+    if (!_bottomDrawerIsRevealed) {
+        
+        _bottomDrawerIsRevealed = YES;
     
-    CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    [fadeOutAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
-    
-    // Set up path movement
-    
-    CABasicAnimation *moveAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
-    [moveAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(-320, [self calculateYforImageOnly:NO])]];
+        // Prepare bottom drawer
+        
+        if (bottomDrawer == nil) {
+            [self loadBottomDrawer];
+        }
+        
+        // Set up fade in effect
+        
+        CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+        [fadeInAnimation setToValue:[NSNumber numberWithFloat:1]];
+        
+        // Set up path movement
+        
+        int bottomDrawerStartX = 320+kHidingOffset;
+        
+        CABasicAnimation *moveInAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+        [moveInAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(bottomDrawerStartX/2 + bottomDrawerStartX, gFeedCellHeight/2)]];
+        
+        // Group animations
+        
+        CAAnimationGroup *groupIn = [CAAnimationGroup animation];
+        groupIn.fillMode = kCAFillModeForwards;
+        groupIn.removedOnCompletion = NO;
+        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, moveInAnimation, nil]];
+        groupIn.duration = kAnimDuration;
+        groupIn.delegate = self;
+        
+        // Set up fade out effect
+        
+        CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+        [fadeOutAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
+        
+        // Set up path movement
+        
+        CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+        [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(kHidingOffset/2, gFeedCellHeight/2)]];
 
-    // Group animations
-    
-    CAAnimationGroup *group = [CAAnimationGroup animation];
-    group.fillMode = kCAFillModeForwards;
-    group.removedOnCompletion = NO;
-    [group setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, moveAnimation, nil]];
-    group.duration = 0.3f;
-    group.delegate = self;
-    
-    [group setValue:topDrawer forKey:@"viewBeingAnimated"];
-    [topDrawer.layer addAnimation:group forKey:@"revealAnimation"];
-    
-    
+        // Group animations
+        
+        CAAnimationGroup *groupOut = [CAAnimationGroup animation];
+        groupOut.fillMode = kCAFillModeForwards;
+        groupOut.removedOnCompletion = NO;
+        [groupOut setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, moveOutAnimation, nil]];
+        groupOut.duration = kAnimDuration;
+        groupOut.delegate = self;
+        
+        // Add animations
+        
+        [groupIn setValue:bottomDrawer forKey:@"viewBeingAnimated"];
+        [bottomDrawer.layer addAnimation:groupIn forKey:kKeyOfRevealAnimation];
+        
+        [groupOut setValue:topDrawer forKey:@"viewBeingAnimated"];
+        [topDrawer.layer addAnimation:groupOut forKey:kKeyOfRevealAnimation];
+        
+    }
     
 }
 
 - (void)hideSubDrawer
 {
     
+    if (_bottomDrawerIsRevealed) {
+        
+        _bottomDrawerIsRevealed = NO;
     
+        // Set up fade out effect
+        
+        CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+        [fadeInAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
+        
+        // Set up path movement
+        
+        CABasicAnimation *moveInAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+        [moveInAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(320+bottomDrawer.bounds.size.width/2, gFeedCellHeight/2)]];
+        
+        // Group animations
+        
+        CAAnimationGroup *groupIn = [CAAnimationGroup animation];
+        groupIn.fillMode = kCAFillModeForwards;
+        groupIn.removedOnCompletion = NO;
+        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, moveInAnimation, nil]];
+        groupIn.duration = kAnimDuration;
+        groupIn.delegate = self;
+        
+        // Set up fade in effect
+        
+        CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+        [fadeOutAnimation setToValue:[NSNumber numberWithFloat:1]];
+        
+        // Set up path movement
+        
+        CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+        [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(320/2, gFeedCellHeight/2)]];
+        
+        // Group animations
+        
+        CAAnimationGroup *groupOut = [CAAnimationGroup animation];
+        groupOut.fillMode = kCAFillModeForwards;
+        groupOut.removedOnCompletion = NO;
+        [groupOut setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, moveOutAnimation, nil]];
+        groupOut.duration = kAnimDuration;
+        groupOut.delegate = self;
+        
+        // Add animations
+        
+        [groupIn setValue:bottomDrawer forKey:@"viewBeingAnimated"];
+        [bottomDrawer.layer addAnimation:groupIn forKey:kKeyOfHideAnimation];
+        
+        [groupOut setValue:topDrawer forKey:@"viewBeingAnimated"];
+        [topDrawer.layer addAnimation:groupOut forKey:kKeyOfHideAnimation];
+        
+    }
+    
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    
+    if (flag && anim == [topDrawer.layer animationForKey:kKeyOfRevealAnimation]) {
+        
+        [topDrawer setFrame:CGRectMake(kHidingOffset, 0, 320, gFeedCellHeight)];
+        [bottomDrawer setFrame:CGRectMake(320+kHidingOffset, 0, bottomDrawer.bounds.size.width, bottomDrawer.bounds.size.height)];
+        
+    } else if (flag && anim == [topDrawer.layer animationForKey:kKeyOfHideAnimation]) {
+        
+        [topDrawer setFrame:CGRectMake(0, 0, 320, gFeedCellHeight)];
+        [bottomDrawer setFrame:CGRectMake(320, 0, bottomDrawer.bounds.size.width, bottomDrawer.bounds.size.height)];
+        
+    }
     
 }
 
@@ -117,6 +235,16 @@
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
+    
+}
+
+#pragma mark - Jumps
+
+- (void)pushDetailView
+{
+    
+    NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
+    [_delegate didSelectRowAtIndexPath:indexPath withAction:ActionKeyShowDetails];
     
 }
 
@@ -228,18 +356,45 @@
 - (void)loadBottomDrawer
 {
     
-    bottomDrawer = [[UIView alloc] initWithFrame:CGRectMake(320, [self calculateYforImageOnly:NO], 320, gFeedCellHeight)];
+    int availableWidth = 320 - (320+kHidingOffset);
+    
+    bottomDrawer = [[UIView alloc] initWithFrame:CGRectMake(320, 0, availableWidth, gFeedCellHeight)];
     [bottomDrawer setAlpha:kHiddenOpacity];
+    
+    // calculate button frames
+    
+    int numOfButtons = 2;
+    
+    NSMutableArray *btnRects = [[NSMutableArray alloc] initWithCapacity:numOfButtons];
+    int btnStartY = (gFeedCellHeight - (numOfButtons*kButtonHeight + (numOfButtons-1)*kButtonSpace)) / 2;
+    for (int i = 0; i < numOfButtons; i++) {
+        CGRect f = CGRectMake(kButtonSpace, btnStartY, availableWidth-2*kButtonSpace, kButtonHeight);
+        [btnRects addObject:[NSValue valueWithCGRect:f]];
+        btnStartY += (kButtonHeight + kButtonSpace);
+    }
     
     // add buttons
     
-    UIButton *browserBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 100, 40)];
-    [browserBtn setTitle:@"Show details" forState:UIControlStateNormal];
-    [bottomDrawer addSubview:browserBtn];
+    BButton *detailBtn = [[BButton alloc] initWithFrame:[[btnRects objectAtIndex:0] CGRectValue] type:BButtonTypeDefault];
+    [detailBtn setTitle:@"Show details" forState:UIControlStateNormal];
+    [detailBtn addTarget:self action:@selector(pushDetailView) forControlEvents:UIControlEventTouchUpInside];
+    [bottomDrawer addSubview:detailBtn];
+    
+    BButton *shareBtn = [[BButton alloc] initWithFrame:[[btnRects objectAtIndex:1] CGRectValue] type:BButtonTypeDefault];
+    [shareBtn setTitle:@"Share this" forState:UIControlStateNormal];
+    [bottomDrawer addSubview:shareBtn];
     
     // add bottom drawer to cell
     
     [self.viewForBaselineLayout addSubview:bottomDrawer];
+    
+    // add interactivity to bottom drawer
+    
+    [bottomDrawer setUserInteractionEnabled:YES];
+    
+    UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+    [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
+    [bottomDrawer addGestureRecognizer:swipeRightRec];
     
 }
 
