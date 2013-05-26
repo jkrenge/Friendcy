@@ -15,14 +15,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
 
+    [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 
     Feed *feed = [[Feed alloc] initWithStyle:UITableViewStylePlain];
     
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:feed];
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

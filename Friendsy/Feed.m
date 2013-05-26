@@ -12,6 +12,8 @@
 
 #import "Defines.h"
 
+#import "UIViewController+HCPushBackAnimation.h"
+
 @interface Feed ()
 
 @end
@@ -50,8 +52,11 @@
 
     // set up button to start friend adder
     
-    UIBarButtonItem *btn_loadFriendAdder = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(loadFriendAdder)];
-    [self.navigationItem setRightBarButtonItem:btn_loadFriendAdder];
+    UIBarButtonItem *btn_loadFriendAdder = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"112-group"] style:UIBarButtonItemStyleBordered target:self action:@selector(loadFriendAdder)];
+    [self.navigationItem setLeftBarButtonItem:btn_loadFriendAdder];
+    
+    UIBarButtonItem *btn_presentOptions = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"20-gear-2"] style:UIBarButtonItemStyleBordered target:self action:@selector(presentOptions)];
+    [self.navigationItem setRightBarButtonItem:btn_presentOptions];
     
     // set up refresher
     
@@ -94,12 +99,14 @@
     
     [self presentViewController:friendAdder animated:YES completion:nil];
     
+    [self animationPushBackScaleDown];
+    
 }
 
 - (void)finishedAddingFriends
 {
     
-    ALog(@"");
+    [self animationPopFrontScaleUp];
     
     [self dismissViewControllerAnimated:YES completion:^{
         [self refreshViewShouldStart];
@@ -117,6 +124,32 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:feeds forKey:@"feeds"];
     [defaults synchronize];
+    
+}
+
+#pragma mark - Options
+
+- (void)presentOptions
+{
+    
+    OptionsTable *options = [[OptionsTable alloc] initWithStyle:UITableViewStyleGrouped];
+    [options setDelegate:self];
+    UINavigationController *optionsContainer = [[UINavigationController alloc] initWithRootViewController:options];
+    
+    [self.navigationController presentViewController:optionsContainer animated:YES completion:nil];
+    
+    [self animationPushBackScaleDown];
+    
+}
+
+- (void)didFinishOptions
+{
+    
+    [self animationPopFrontScaleUp];
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self refreshViewShouldStart];
+    }];
     
 }
 

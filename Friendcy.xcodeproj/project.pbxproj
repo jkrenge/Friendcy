@@ -32,7 +32,14 @@
 		B9526D0117522F0E0047414B /* TSMiniWebBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = B9526CF917522F0E0047414B /* TSMiniWebBrowser.m */; };
 		B9526D0217522F0E0047414B /* TSMiniWebBrowser.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9526CFA17522F0E0047414B /* TSMiniWebBrowser.xib */; };
 		B9526D061752320F0047414B /* NSURL+uriEquivalence.m in Sources */ = {isa = PBXBuildFile; fileRef = B9526D051752320F0047414B /* NSURL+uriEquivalence.m */; };
+		B957098817525D2A00531808 /* UIViewController+HCPushBackAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = B957098717525D2A00531808 /* UIViewController+HCPushBackAnimation.m */; };
+		B957098C17525DA600531808 /* OptionsTable.m in Sources */ = {isa = PBXBuildFile; fileRef = B957098B17525DA600531808 /* OptionsTable.m */; };
+		B957099017525DFB00531808 /* FrameworkDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = B957098F17525DFB00531808 /* FrameworkDescription.m */; };
 		B989157A172D2080004AD00B /* FeedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B9891579172D2080004AD00B /* FeedCell.m */; };
+		B98AB8CC1752675400C0665B /* 20-gear-2.png in Resources */ = {isa = PBXBuildFile; fileRef = B98AB8CA1752675400C0665B /* 20-gear-2.png */; };
+		B98AB8CD1752675400C0665B /* 20-gear-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B98AB8CB1752675400C0665B /* 20-gear-2@2x.png */; };
+		B98AB8D01752679000C0665B /* 112-group.png in Resources */ = {isa = PBXBuildFile; fileRef = B98AB8CE1752679000C0665B /* 112-group.png */; };
+		B98AB8D11752679000C0665B /* 112-group@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B98AB8CF1752679000C0665B /* 112-group@2x.png */; };
 		B9B4634F172BE1D900A37FE0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B4634E172BE1D900A37FE0 /* UIKit.framework */; };
 		B9B46351172BE1D900A37FE0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B46350172BE1D900A37FE0 /* Foundation.framework */; };
 		B9B46353172BE1D900A37FE0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B46352172BE1D900A37FE0 /* CoreGraphics.framework */; };
@@ -113,8 +120,18 @@
 		B9526CFA17522F0E0047414B /* TSMiniWebBrowser.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TSMiniWebBrowser.xib; sourceTree = "<group>"; };
 		B9526D041752320F0047414B /* NSURL+uriEquivalence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+uriEquivalence.h"; sourceTree = "<group>"; };
 		B9526D051752320F0047414B /* NSURL+uriEquivalence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+uriEquivalence.m"; sourceTree = "<group>"; };
+		B957098617525D2A00531808 /* UIViewController+HCPushBackAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HCPushBackAnimation.h"; sourceTree = "<group>"; };
+		B957098717525D2A00531808 /* UIViewController+HCPushBackAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HCPushBackAnimation.m"; sourceTree = "<group>"; };
+		B957098A17525DA600531808 /* OptionsTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionsTable.h; sourceTree = "<group>"; };
+		B957098B17525DA600531808 /* OptionsTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionsTable.m; sourceTree = "<group>"; };
+		B957098E17525DFB00531808 /* FrameworkDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkDescription.h; sourceTree = "<group>"; };
+		B957098F17525DFB00531808 /* FrameworkDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameworkDescription.m; sourceTree = "<group>"; };
 		B9891578172D2080004AD00B /* FeedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedCell.h; sourceTree = "<group>"; };
 		B9891579172D2080004AD00B /* FeedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedCell.m; sourceTree = "<group>"; };
+		B98AB8CA1752675400C0665B /* 20-gear-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "20-gear-2.png"; sourceTree = "<group>"; };
+		B98AB8CB1752675400C0665B /* 20-gear-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "20-gear-2@2x.png"; sourceTree = "<group>"; };
+		B98AB8CE1752679000C0665B /* 112-group.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "112-group.png"; sourceTree = "<group>"; };
+		B98AB8CF1752679000C0665B /* 112-group@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "112-group@2x.png"; sourceTree = "<group>"; };
 		B9B4634B172BE1D900A37FE0 /* Friendcy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Friendcy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9B4634E172BE1D900A37FE0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B9B46350172BE1D900A37FE0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -191,6 +208,10 @@
 			children = (
 				B91A9A99172D8745007283DD /* Icon@2x.png */,
 				B91A9A97172D8741007283DD /* Icon.png */,
+				B98AB8CA1752675400C0665B /* 20-gear-2.png */,
+				B98AB8CB1752675400C0665B /* 20-gear-2@2x.png */,
+				B98AB8CE1752679000C0665B /* 112-group.png */,
+				B98AB8CF1752679000C0665B /* 112-group@2x.png */,
 			);
 			name = Artwork;
 			sourceTree = "<group>";
@@ -277,6 +298,34 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		B957098517525D1000531808 /* HCPushBackAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				B957098617525D2A00531808 /* UIViewController+HCPushBackAnimation.h */,
+				B957098717525D2A00531808 /* UIViewController+HCPushBackAnimation.m */,
+			);
+			name = HCPushBackAnimation;
+			sourceTree = "<group>";
+		};
+		B957098917525D7F00531808 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				B957098D17525DCF00531808 /* Model */,
+				B957098A17525DA600531808 /* OptionsTable.h */,
+				B957098B17525DA600531808 /* OptionsTable.m */,
+			);
+			name = Options;
+			sourceTree = "<group>";
+		};
+		B957098D17525DCF00531808 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B957098E17525DFB00531808 /* FrameworkDescription.h */,
+				B957098F17525DFB00531808 /* FrameworkDescription.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		B9B46342172BE1D900A37FE0 = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +348,7 @@
 		B9B4634D172BE1D900A37FE0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B957098517525D1000531808 /* HCPushBackAnimation */,
 				B9526CF017522F0E0047414B /* TSMiniWebBrowser */,
 				B91A9A91172D7A6F007283DD /* GGFullScreenImage */,
 				B9526CC017511C430047414B /* BButton */,
@@ -320,6 +370,7 @@
 		B9B46354172BE1D900A37FE0 /* Friendcy */ = {
 			isa = PBXGroup;
 			children = (
+				B957098917525D7F00531808 /* Options */,
 				B9B4637B172BE28800A37FE0 /* FriendAdder */,
 				B9B46377172BE21F00A37FE0 /* Feed */,
 				B9B4635D172BE1D900A37FE0 /* AppDelegate.h */,
@@ -487,6 +538,10 @@
 				B9526CFF17522F0E0047414B /* reload_icon.png in Resources */,
 				B9526D0017522F0E0047414B /* reload_icon@2x.png in Resources */,
 				B9526D0217522F0E0047414B /* TSMiniWebBrowser.xib in Resources */,
+				B98AB8CC1752675400C0665B /* 20-gear-2.png in Resources */,
+				B98AB8CD1752675400C0665B /* 20-gear-2@2x.png in Resources */,
+				B98AB8D01752679000C0665B /* 112-group.png in Resources */,
+				B98AB8D11752679000C0665B /* 112-group@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,6 +566,9 @@
 				B9526CCC17511C520047414B /* UIColor+BButton.m in Sources */,
 				B9526D0117522F0E0047414B /* TSMiniWebBrowser.m in Sources */,
 				B9526D061752320F0047414B /* NSURL+uriEquivalence.m in Sources */,
+				B957098817525D2A00531808 /* UIViewController+HCPushBackAnimation.m in Sources */,
+				B957098C17525DA600531808 /* OptionsTable.m in Sources */,
+				B957099017525DFB00531808 /* FrameworkDescription.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

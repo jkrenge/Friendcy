@@ -315,7 +315,7 @@
     [lightBorder setFrame:CGRectMake(kBorderOffset+1, kBorderOffset+1+kSpaceAboveImage, darkBorder.frame.size.width-2, darkBorder.frame.size.height-2)];
     [lightBorder setBackgroundColor:[UIColor colorWithRed:.96 green:.96 blue:.96 alpha:1.].CGColor];
     
-    image = [[UIImageViewModeScaleAspect alloc] initWithFrame:CGRectMake(imageBorder, imageBorder+kSpaceAboveImage, 320-2*imageBorder, gFeedCellHeight-kSpaceAboveImage-2*imageBorder)];
+    image = [[UIImageView alloc] initWithFrame:CGRectMake(imageBorder, imageBorder+kSpaceAboveImage, 320-2*imageBorder, gFeedCellHeight-kSpaceAboveImage-2*imageBorder)];
     [image setClipsToBounds:YES];
     [image setContentMode:UIViewContentModeScaleAspectFill];
     

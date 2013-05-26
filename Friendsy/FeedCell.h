@@ -11,7 +11,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "GGFullScreenImageViewController.h"
-#import "UIImageViewModeScaleAspect.h"
 
 #import "FeedItem.h"
 
@@ -33,7 +32,7 @@ typedef enum {
     UIView *topDrawer;
     UIView *bottomDrawer;
     
-    UIImageViewModeScaleAspect *image;
+    UIImageView *image;
     UILabel *title;
     UILabel *date;
     UILabel *author;
