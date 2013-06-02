@@ -52,16 +52,8 @@
         
         // add interactivity
         
-        UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullscreenImage)];
-        [image addGestureRecognizer:tapRec];
-        
-        UISwipeGestureRecognizer *swipeLeftRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(revealSubDrawer)];
-        [swipeLeftRec setDirection:UISwipeGestureRecognizerDirectionLeft];
-        [topDrawer addGestureRecognizer:swipeLeftRec];
-        
-        UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
-        [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
-        [topDrawer addGestureRecognizer:swipeRightRec];
+//        UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullscreenImage)];
+//        [image addGestureRecognizer:tapRec];
         
     }
     return self;
@@ -69,103 +61,139 @@
 
 #pragma mark - Drawer interaction
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    
+    // Prepare bottom drawer
+    
+    if (bottomDrawer == nil) {
+        [self loadBottomDrawer];
+    }
+    
+    // block interaction with table itself
+    
+    [_delegate didBeginInteractionWithCell];
+    
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event 
+{
+    
+    UITouch *aTouch = [touches anyObject];
+    CGPoint location = [aTouch locationInView:self];
+    CGPoint previousLocation = [aTouch previousLocationInView:self];
+    topDrawer.frame = CGRectOffset(topDrawer.frame, location.x-previousLocation.x, 0);
+
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    
+    [_delegate didEndInteractionWithCell];
+    
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+
+    [_delegate didEndInteractionWithCell];
+    
+    if (topDrawer.frame.origin.x < -50) [self revealSubDrawer];
+    else [self hideSubDrawer];
+    
+}
+
 - (void)revealSubDrawer
 {
     
-    if (!_bottomDrawerIsRevealed) {
+    if (_bottomDrawerIsRevealed) return;
         
-        _bottomDrawerIsRevealed = YES;
-    
-        // Prepare bottom drawer
-        
-        if (bottomDrawer == nil) {
-            [self loadBottomDrawer];
-        }
-        
-        // Set up fade in effect
-        
-        CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-        [fadeInAnimation setToValue:[NSNumber numberWithFloat:1]];
-        
-        // Group animations
-        
-        CAAnimationGroup *groupIn = [CAAnimationGroup animation];
-        groupIn.fillMode = kCAFillModeForwards;
-        groupIn.removedOnCompletion = NO;
-        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, nil]];
-        groupIn.duration = kAnimDuration;
-        groupIn.delegate = self;
-        
-        // Set up path movement
-        
-        CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
-        [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(kHidingOffset/2, gFeedCellHeight/2)]];
+    _bottomDrawerIsRevealed = YES;
 
-        // Group animations
-        
-        CAAnimationGroup *groupOut = [CAAnimationGroup animation];
-        groupOut.fillMode = kCAFillModeForwards;
-        groupOut.removedOnCompletion = NO;
-        [groupOut setAnimations:[NSArray arrayWithObjects:moveOutAnimation, nil]];
-        groupOut.duration = kAnimDuration;
-        groupOut.delegate = self;
-        
-        // Add animations
-        
-        [groupIn setValue:bottomDrawer forKey:@"viewBeingAnimated"];
-        [bottomDrawer.layer addAnimation:groupIn forKey:kKeyOfRevealAnimation];
-        
-        [groupOut setValue:topDrawer forKey:@"viewBeingAnimated"];
-        [topDrawer.layer addAnimation:groupOut forKey:kKeyOfRevealAnimation];
-        
+    // Prepare bottom drawer
+    
+    if (bottomDrawer == nil) {
+        [self loadBottomDrawer];
     }
+    
+    // Set up fade in effect
+    
+    CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    [fadeInAnimation setToValue:[NSNumber numberWithFloat:1]];
+    
+    // Group animations
+    
+    CAAnimationGroup *groupIn = [CAAnimationGroup animation];
+    groupIn.fillMode = kCAFillModeForwards;
+    groupIn.removedOnCompletion = NO;
+    [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, nil]];
+    groupIn.duration = kAnimDuration;
+    groupIn.delegate = self;
+    
+    // Set up path movement
+    
+    CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+    [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(kHidingOffset/2, gFeedCellHeight/2)]];
+
+    // Group animations
+    
+    CAAnimationGroup *groupOut = [CAAnimationGroup animation];
+    groupOut.fillMode = kCAFillModeForwards;
+    groupOut.removedOnCompletion = NO;
+    [groupOut setAnimations:[NSArray arrayWithObjects:moveOutAnimation, nil]];
+    groupOut.duration = kAnimDuration;
+    groupOut.delegate = self;
+    
+    // Add animations
+    
+    [groupIn setValue:bottomDrawer forKey:@"viewBeingAnimated"];
+    [bottomDrawer.layer addAnimation:groupIn forKey:kKeyOfRevealAnimation];
+    
+    [groupOut setValue:topDrawer forKey:@"viewBeingAnimated"];
+    [topDrawer.layer addAnimation:groupOut forKey:kKeyOfRevealAnimation];
     
 }
 
 - (void)hideSubDrawer
 {
+        
+    _bottomDrawerIsRevealed = NO;
+
+    // Set up fade out effect
     
-    if (_bottomDrawerIsRevealed) {
-        
-        _bottomDrawerIsRevealed = NO;
+    CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    [fadeInAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
     
-        // Set up fade out effect
-        
-        CABasicAnimation *fadeInAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-        [fadeInAnimation setToValue:[NSNumber numberWithFloat:kHiddenOpacity]];
-        
-        // Group animations
-        
-        CAAnimationGroup *groupIn = [CAAnimationGroup animation];
-        groupIn.fillMode = kCAFillModeForwards;
-        groupIn.removedOnCompletion = NO;
-        [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, nil]];
-        groupIn.duration = kAnimDuration;
-        groupIn.delegate = self;
-        
-        // Set up path movement
-        
-        CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
-        [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(320/2, gFeedCellHeight/2)]];
-        
-        // Group animations
-        
-        CAAnimationGroup *groupOut = [CAAnimationGroup animation];
-        groupOut.fillMode = kCAFillModeForwards;
-        groupOut.removedOnCompletion = NO;
-        [groupOut setAnimations:[NSArray arrayWithObjects:moveOutAnimation, nil]];
-        groupOut.duration = kAnimDuration;
-        groupOut.delegate = self;
-        
-        // Add animations
-        
-        [groupIn setValue:bottomDrawer forKey:@"viewBeingAnimated"];
-        [bottomDrawer.layer addAnimation:groupIn forKey:kKeyOfHideAnimation];
-        
-        [groupOut setValue:topDrawer forKey:@"viewBeingAnimated"];
-        [topDrawer.layer addAnimation:groupOut forKey:kKeyOfHideAnimation];
-        
-    }
+    // Group animations
+    
+    CAAnimationGroup *groupIn = [CAAnimationGroup animation];
+    groupIn.fillMode = kCAFillModeForwards;
+    groupIn.removedOnCompletion = NO;
+    [groupIn setAnimations:[NSArray arrayWithObjects:fadeInAnimation, nil]];
+    groupIn.duration = kAnimDuration;
+    groupIn.delegate = self;
+    
+    // Set up path movement
+    
+    CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+    [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(320/2, gFeedCellHeight/2)]];
+    
+    // Group animations
+    
+    CAAnimationGroup *groupOut = [CAAnimationGroup animation];
+    groupOut.fillMode = kCAFillModeForwards;
+    groupOut.removedOnCompletion = NO;
+    [groupOut setAnimations:[NSArray arrayWithObjects:moveOutAnimation, nil]];
+    groupOut.duration = kAnimDuration;
+    groupOut.delegate = self;
+    
+    // Add animations
+    
+    [groupIn setValue:bottomDrawer forKey:@"viewBeingAnimated"];
+    [bottomDrawer.layer addAnimation:groupIn forKey:kKeyOfHideAnimation];
+    
+    [groupOut setValue:topDrawer forKey:@"viewBeingAnimated"];
+    [topDrawer.layer addAnimation:groupOut forKey:kKeyOfHideAnimation];
     
 }
 
@@ -205,7 +233,7 @@
     [fullscreen setLiftedImageView:image];
     
     AppDelegate* myAppDelegate = [[UIApplication sharedApplication] delegate];
-    [myAppDelegate.navigationController presentViewController:fullscreen animated:YES completion:nil];
+    [myAppDelegate.drawerController presentViewController:fullscreen animated:YES completion:nil];
     
 }
 
@@ -387,14 +415,14 @@
     
     // add interactivity to bottom drawer
     
-    [bottomDrawer setUserInteractionEnabled:YES];
-    
-    UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
-    [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
-    [bottomDrawer addGestureRecognizer:swipeRightRec];
-    
-    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
-    [bottomDrawer addGestureRecognizer:tapRec];
+//    [bottomDrawer setUserInteractionEnabled:YES];
+//    
+//    UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+//    [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
+//    [bottomDrawer addGestureRecognizer:swipeRightRec];
+//    
+//    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+//    [bottomDrawer addGestureRecognizer:tapRec];
     
 }
 

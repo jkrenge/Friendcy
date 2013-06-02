@@ -21,6 +21,8 @@ typedef enum {
 
 @protocol FeedCellActionDelegate <NSObject>
 - (void)didSelectRowAtIndexPath:(NSIndexPath*)indexPath withAction:(ActionKey)action;
+- (void)didBeginInteractionWithCell;
+- (void)didEndInteractionWithCell;
 @end
 
 @interface FeedCell : UITableViewCell

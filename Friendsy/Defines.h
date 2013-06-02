@@ -16,4 +16,15 @@
 #define gFeedCellHeight 280
 #define gPlaceholderImage @""
 
+#define sHeaderFont @"Novecentowide-Bold"
+#define sHeaderSize 20.
+
+#define nToggleDrawer @"notification-toggleMainDrawer"
+#define nModalCall @"notification-callModal"
+#define nModalDismiss @"notification-dismissModal"
+#define nRefreshFeed @"notification-refreshFeed"
+
+#define cDarkColor [UIColor colorWithRed:61/255. green:67/255. blue:77/255. alpha:1.]
+#define cLightColor [UIColor colorWithRed:238/255. green:240/255. blue:243/255. alpha:1.]
+
 #endif

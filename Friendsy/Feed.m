@@ -12,8 +12,6 @@
 
 #import "Defines.h"
 
-#import "UIViewController+HCPushBackAnimation.h"
-
 @interface Feed ()
 
 @end
@@ -49,14 +47,30 @@
     
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"hh:mm 'am' dd.MM.yy"];
+    
+    // appearance of navigation bar
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"UINavigationBar"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      cDarkColor,
+      UITextAttributeTextColor,
+      [UIColor colorWithRed:255. green:255. blue:255. alpha:1.],
+      UITextAttributeTextShadowColor,
+      [NSValue valueWithUIOffset:UIOffsetMake(0, 0)],
+      UITextAttributeTextShadowOffset,
+      [UIFont fontWithName:sHeaderFont size:sHeaderSize],
+      UITextAttributeFont,
+      nil]];
 
     // set up button to start friend adder
     
-    UIBarButtonItem *btn_loadFriendAdder = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"112-group"] style:UIBarButtonItemStyleBordered target:self action:@selector(loadFriendAdder)];
-    [self.navigationItem setLeftBarButtonItem:btn_loadFriendAdder];
-    
-    UIBarButtonItem *btn_presentOptions = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"20-gear-2"] style:UIBarButtonItemStyleBordered target:self action:@selector(presentOptions)];
-    [self.navigationItem setRightBarButtonItem:btn_presentOptions];
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setImage:[UIImage imageNamed:@"UIBarItem-group"] forState:UIControlStateNormal];
+    [btn setFrame:CGRectMake(0, 0, 38, 28)];
+    [btn addTarget:self action:@selector(showMenu) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    [self.navigationItem setRightBarButtonItem:barBtn];
     
     // set up refresher
     
@@ -69,88 +83,28 @@
     
     [self.tableView setRowHeight:gFeedCellHeight];
     [self.tableView setSeparatorColor:[UIColor clearColor]];
-    [self.tableView setBackgroundColor:[UIColor colorWithRed:.95 green:.95 blue:.98 alpha:1.]];
+    [self.tableView setBackgroundColor:cLightColor];
     
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    NSString *theFancyUsername = [defaults stringForKey:@"theFancyUsername"];
-//    
-//    if (!(theFancyUsername == nil || [theFancyUsername isEqualToString:@""]))
-//        [self refreshViewShouldStart];
+    if (feedItems.count == 0) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *theFancyUsername = [defaults stringForKey:@"theFancyUsername"];
+        
+        if (!(theFancyUsername == nil || [theFancyUsername isEqualToString:@""]))
+            [self refreshViewShouldStart];
+        
+    }
     
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-#pragma mark - FriendAdder
-
-- (void)loadFriendAdder
-{
-    
-    FriendAdder *friendAdder = [[FriendAdder alloc] initWithNibName:nil bundle:nil];
-    [friendAdder setDelegate:self];
-    
-    [self presentViewController:friendAdder animated:YES completion:nil];
-    
-    [self animationPushBackScaleDown];
-    
-}
-
-- (void)finishedAddingFriends
-{
-    
-    [self animationPopFrontScaleUp];
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self refreshViewShouldStart];
-    }];
-    
-}
-
-- (void)addedFriendURL:(NSString *)rssURL
-{
-    
-    ALog(@"Added %@", rssURL);
-    
-    [feeds addObject:rssURL];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:feeds forKey:@"feeds"];
-    [defaults synchronize];
-    
-}
-
-#pragma mark - Options
-
-- (void)presentOptions
-{
-    
-    OptionsTable *options = [[OptionsTable alloc] initWithStyle:UITableViewStyleGrouped];
-    [options setDelegate:self];
-    UINavigationController *optionsContainer = [[UINavigationController alloc] initWithRootViewController:options];
-    
-    [self.navigationController presentViewController:optionsContainer animated:YES completion:nil];
-    
-    [self animationPushBackScaleDown];
-    
-}
-
-- (void)didFinishOptions
-{
-    
-    [self animationPopFrontScaleUp];
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self refreshViewShouldStart];
-    }];
-    
 }
 
 #pragma mark - Feed Parser
@@ -362,7 +316,28 @@
     
 }
 
+- (void)didBeginInteractionWithCell
+{
+    
+    [self.tableView setScrollEnabled:NO];
+    
+}
+
+- (void)didEndInteractionWithCell
+{
+    
+    [self.tableView setScrollEnabled:YES];
+    
+}
+
 #pragma mark - Navigation
+
+- (void)showMenu
+{
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:nToggleDrawer object:nil];
+    
+}
 
 - (void)presentDetailsForItem:(FeedItem*)item
 {

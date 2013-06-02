@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 
 #import "Feed.h"
+#import "Menu.h"
+
+#import "UIViewController+HCPushBackAnimation.h"
 
 @implementation AppDelegate
 
@@ -19,13 +22,75 @@
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 
     Feed *feed = [[Feed alloc] initWithStyle:UITableViewStylePlain];
+    UINavigationController *feedContainer = [[UINavigationController alloc] initWithRootViewController:feed];
     
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:feed];
-    self.window.rootViewController = self.navigationController;
+    Menu *menu = [[Menu alloc] initWithStyle:UITableViewStylePlain];
+    UINavigationController *menuContainer = [[UINavigationController alloc] initWithRootViewController:menu];
+    
+    self.drawerController = [[MMDrawerController alloc] initWithCenterViewController:feedContainer rightDrawerViewController:menuContainer];
+    
+    [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModePanningNavigationBar];
+    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+    [self.drawerController setDrawerVisualStateBlock:[MMDrawerVisualState slideAndScaleVisualStateBlock]];
+    
+    [self.window setRootViewController:self.drawerController];
+    [self.window setBackgroundColor:[UIColor blackColor]];
     [self.window makeKeyAndVisible];
+    
+    // register for notifications
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleDrawer) name:nToggleDrawer object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(modalCalled) name:nModalCall object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(modalDismissed) name:nModalDismiss object:nil];
+    
+    // Style
+    
+    [self styleUINavigationBar];
     
     return YES;
 }
+
+#pragma mark - Global notifications
+
+- (void)toggleDrawer
+{
+    
+    if (self.drawerController.openSide == MMDrawerSideNone) {
+        
+        [self.drawerController openDrawerSide:MMDrawerSideRight animated:YES completion:nil];
+        
+    } else {
+        
+        [self.drawerController closeDrawerAnimated:YES completion:nil];
+        
+    }
+    
+}
+
+- (void)modalCalled
+{
+    
+    [self.drawerController animationPushBackScaleDown];
+    
+}
+
+- (void)modalDismissed
+{
+    
+    [self.drawerController animationPopFrontScaleUp];
+    
+}
+
+#pragma mark - Global styling
+
+- (void)styleUINavigationBar
+{
+    
+    [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
+    
+}
+
+#pragma mark - Application delegates
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

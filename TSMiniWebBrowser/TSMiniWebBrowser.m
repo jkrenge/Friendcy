@@ -227,6 +227,13 @@ enum actionSheetButtonIndex {
 
 #pragma mark - View lifecycle
 
+- (void)didTapBackButton:(id)sender
+{
+    
+    [self.navigationController popViewControllerAnimated:YES];
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -246,6 +253,17 @@ enum actionSheetButtonIndex {
         originalBarStyle = self.navigationController.navigationBar.barStyle;
     }
     
+    // CUSTOMIZATION: Julian Krenge, June 02, 2013
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setImage:[UIImage imageNamed:@"UIBarItem-back"] forState:UIControlStateNormal];
+    [btn setFrame:CGRectMake(0, 0, 38, 28)];
+    [btn addTarget:self action:@selector(didTapBackButton:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    [self.navigationItem setLeftBarButtonItem:barBtn];
+    
+    // END CUSTOMIZATION
+    
     // Init tool bar
     [self initToolBar];
     
@@ -258,7 +276,7 @@ enum actionSheetButtonIndex {
     }
     
     // Status bar style
-    [[UIApplication sharedApplication] setStatusBarStyle:barStyle animated:YES];
+//    [[UIApplication sharedApplication] setStatusBarStyle:barStyle animated:YES];
     
     // UI state
     buttonGoBack.enabled = NO;
@@ -297,7 +315,7 @@ enum actionSheetButtonIndex {
     }
     
     // Restore Status bar style
-    [[UIApplication sharedApplication] setStatusBarStyle:originalBarStyle animated:NO];
+//    [[UIApplication sharedApplication] setStatusBarStyle:originalBarStyle animated:NO];
     
     // Stop loading
     [webView stopLoading];

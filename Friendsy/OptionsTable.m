@@ -10,9 +10,10 @@
 
 #import "FrameworkDescription.h"
 
-@interface OptionsTable ()
+#import "Defines.h"
 
-@end
+#define kHeightOfRow 52.
+#define kHeightOfSeparator 8.
 
 @implementation OptionsTable
 
@@ -33,16 +34,35 @@
 {
     [super viewDidLoad];
     
-    // set up button
+    // set up button to dismiss modal
     
-    UIBarButtonItem *btn_cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(finished)];
-    [self.navigationItem setRightBarButtonItem:btn_cancel];
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setImage:[UIImage imageNamed:@"UIBarItem-check"] forState:UIControlStateNormal];
+    [btn setFrame:CGRectMake(0, 0, 38, 28)];
+    [btn addTarget:self action:@selector(finished) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    [self.navigationItem setRightBarButtonItem:barBtn];
+    
+    // appearance of navigation bar
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"UINavigationBar"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      cDarkColor,
+      UITextAttributeTextColor,
+      [UIColor colorWithRed:255. green:255. blue:255. alpha:1.],
+      UITextAttributeTextShadowColor,
+      [NSValue valueWithUIOffset:UIOffsetMake(0, 0)],
+      UITextAttributeTextShadowOffset,
+      [UIFont fontWithName:sHeaderFont size:sHeaderSize],
+      UITextAttributeFont,
+      nil]];
     
     // style table
     
-    [self.tableView setRowHeight:52.];
+    [self.tableView setRowHeight:kHeightOfRow+kHeightOfSeparator];
     [self.tableView setSeparatorColor:[UIColor clearColor]];
-    [self.tableView setBackgroundColor:[UIColor colorWithRed:.95 green:.95 blue:.98 alpha:1.]];
+    [self.tableView setBackgroundColor:cLightColor];
     
 }
 
@@ -77,8 +97,9 @@
     
     static NSString *CellIdentifier = @"OptionsCell";
     
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"OptionsCell"];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    [cell setFrame:CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y, cell.bounds.size.width, kHeightOfRow)];
     
     // get content
     
@@ -87,6 +108,7 @@
     // set content of cell
     
     [cell.textLabel setText:content.name];
+    [cell.textLabel setTextColor:cDarkColor];
     [cell.detailTextLabel setText:content.description];
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     
@@ -105,7 +127,7 @@
     if (webBrowser == nil) {
         webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:content.url]];
         [webBrowser setMode:TSMiniWebBrowserModeNavigation];
-        [webBrowser setBarStyle:UIBarStyleDefault];
+//        [webBrowser setBarStyle:UIBarStyleDefault];
         
         [webBrowser setShowURLStringOnActionSheetTitle:YES];
         [webBrowser setShowPageTitleOnTitleBar:YES];
@@ -141,6 +163,12 @@
                            withUrl:@"https://github.com/rs/SDWebImage"
                            andDescription:@"Cached image loader"
                            wasModified:NO]];
+    
+    [frameworks addObject:[[FrameworkDescription alloc]
+                           framework:@"MMDrawerController"
+                           withUrl:@"https://github.com/mutualmobile/MMDrawerController"
+                           andDescription:@"Drawer management for main view"
+                           wasModified:YES]];
     
     [frameworks addObject:[[FrameworkDescription alloc]
                            framework:@"GGFullScreenImage"

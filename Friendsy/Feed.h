@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "FriendAdder.h"
-#import "OptionsTable.h"
 #import "FeedCell.h"
 
 #import <SDWebImage/UIImageView+WebCache.h>
@@ -19,7 +17,7 @@
 #import "NSString+HTML.h"
 #import "NSDate+InternetDateTime.h"
 
-@interface Feed : UITableViewController <FriendAdderDelegate, MWFeedParserDelegate, FeedCellActionDelegate, OptionsDelegate>
+@interface Feed : UITableViewController <MWFeedParserDelegate, FeedCellActionDelegate>
 {
     
     NSDateFormatter *dateFormatter;
