@@ -35,6 +35,14 @@
 		B941D81E175B4F090000DBD6 /* UIBarItem-check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D81C175B4F090000DBD6 /* UIBarItem-check@2x.png */; };
 		B941D821175B50780000DBD6 /* UIBarItem-back.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D81F175B50780000DBD6 /* UIBarItem-back.png */; };
 		B941D822175B50780000DBD6 /* UIBarItem-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D820175B50780000DBD6 /* UIBarItem-back@2x.png */; };
+		B941D825175B908E0000DBD6 /* UIToolbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D823175B908E0000DBD6 /* UIToolbar.png */; };
+		B941D828175B90BF0000DBD6 /* UIToolbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D827175B90BF0000DBD6 /* UIToolbar@2x.png */; };
+		B941D82C175B93390000DBD6 /* PassthroughView.m in Sources */ = {isa = PBXBuildFile; fileRef = B941D82B175B93390000DBD6 /* PassthroughView.m */; };
+		B941D831175B9CEA0000DBD6 /* AccessoryView-group.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D82D175B9CEA0000DBD6 /* AccessoryView-group.png */; };
+		B941D832175B9CEA0000DBD6 /* AccessoryView-group@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D82E175B9CEA0000DBD6 /* AccessoryView-group@2x.png */; };
+		B941D833175B9CEA0000DBD6 /* AccessoryView-one.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D82F175B9CEA0000DBD6 /* AccessoryView-one.png */; };
+		B941D834175B9CEA0000DBD6 /* AccessoryView-one@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B941D830175B9CEA0000DBD6 /* AccessoryView-one@2x.png */; };
+		B941D839175BA7440000DBD6 /* JKIconButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B941D838175BA7440000DBD6 /* JKIconButton.m */; };
 		B9526CC917511C520047414B /* BButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B9526CC217511C520047414B /* BButton.m */; };
 		B9526CCA17511C520047414B /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = B9526CC417511C520047414B /* NSString+FontAwesome.m */; };
 		B9526CCB17511C520047414B /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9526CC617511C520047414B /* FontAwesome.ttf */; };
@@ -139,6 +147,16 @@
 		B941D81C175B4F090000DBD6 /* UIBarItem-check@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UIBarItem-check@2x.png"; path = "Artwork/UIBarItem-check@2x.png"; sourceTree = "<group>"; };
 		B941D81F175B50780000DBD6 /* UIBarItem-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UIBarItem-back.png"; path = "Artwork/UIBarItem-back.png"; sourceTree = "<group>"; };
 		B941D820175B50780000DBD6 /* UIBarItem-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UIBarItem-back@2x.png"; path = "Artwork/UIBarItem-back@2x.png"; sourceTree = "<group>"; };
+		B941D823175B908E0000DBD6 /* UIToolbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = UIToolbar.png; path = Artwork/UIToolbar.png; sourceTree = "<group>"; };
+		B941D827175B90BF0000DBD6 /* UIToolbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UIToolbar@2x.png"; path = "Artwork/UIToolbar@2x.png"; sourceTree = "<group>"; };
+		B941D82A175B93390000DBD6 /* PassthroughView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PassthroughView.h; sourceTree = "<group>"; };
+		B941D82B175B93390000DBD6 /* PassthroughView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PassthroughView.m; sourceTree = "<group>"; };
+		B941D82D175B9CEA0000DBD6 /* AccessoryView-group.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AccessoryView-group.png"; path = "Artwork/AccessoryView-group.png"; sourceTree = "<group>"; };
+		B941D82E175B9CEA0000DBD6 /* AccessoryView-group@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AccessoryView-group@2x.png"; path = "Artwork/AccessoryView-group@2x.png"; sourceTree = "<group>"; };
+		B941D82F175B9CEA0000DBD6 /* AccessoryView-one.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AccessoryView-one.png"; path = "Artwork/AccessoryView-one.png"; sourceTree = "<group>"; };
+		B941D830175B9CEA0000DBD6 /* AccessoryView-one@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AccessoryView-one@2x.png"; path = "Artwork/AccessoryView-one@2x.png"; sourceTree = "<group>"; };
+		B941D837175BA7440000DBD6 /* JKIconButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JKIconButton.h; sourceTree = "<group>"; };
+		B941D838175BA7440000DBD6 /* JKIconButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JKIconButton.m; sourceTree = "<group>"; };
 		B9526CC117511C520047414B /* BButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BButton.h; sourceTree = "<group>"; };
 		B9526CC217511C520047414B /* BButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BButton.m; sourceTree = "<group>"; };
 		B9526CC317511C520047414B /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
@@ -242,6 +260,10 @@
 				B941D80D175B3A6D0000DBD6 /* UIBarItem-info@2x.png */,
 				B941D800175A36410000DBD6 /* UIBarItem-group.png */,
 				B941D801175A36410000DBD6 /* UIBarItem-group@2x.png */,
+				B941D82D175B9CEA0000DBD6 /* AccessoryView-group.png */,
+				B941D82E175B9CEA0000DBD6 /* AccessoryView-group@2x.png */,
+				B941D82F175B9CEA0000DBD6 /* AccessoryView-one.png */,
+				B941D830175B9CEA0000DBD6 /* AccessoryView-one@2x.png */,
 			);
 			name = Icons;
 			sourceTree = "<group>";
@@ -325,6 +347,8 @@
 				B941D809175B39430000DBD6 /* UINavigationBar-dark@2x.png */,
 				B910D8881757804200A7F6D9 /* UINavigationBar-shadow.png */,
 				B910D8891757804200A7F6D9 /* UINavigationBar-shadow@2x.png */,
+				B941D823175B908E0000DBD6 /* UIToolbar.png */,
+				B941D827175B90BF0000DBD6 /* UIToolbar@2x.png */,
 			);
 			name = "UI Graphics";
 			sourceTree = "<group>";
@@ -335,6 +359,17 @@
 				B941D816175B49540000DBD6 /* Novecentowide-Bold.otf */,
 			);
 			name = Fonts;
+			sourceTree = "<group>";
+		};
+		B941D829175B92FE0000DBD6 /* Generic */ = {
+			isa = PBXGroup;
+			children = (
+				B941D82A175B93390000DBD6 /* PassthroughView.h */,
+				B941D82B175B93390000DBD6 /* PassthroughView.m */,
+				B941D837175BA7440000DBD6 /* JKIconButton.h */,
+				B941D838175BA7440000DBD6 /* JKIconButton.m */,
+			);
+			name = Generic;
 			sourceTree = "<group>";
 		};
 		B9526CC017511C430047414B /* BButton */ = {
@@ -475,14 +510,15 @@
 		B9B46354172BE1D900A37FE0 /* Friendcy */ = {
 			isa = PBXGroup;
 			children = (
+				B9B4635D172BE1D900A37FE0 /* AppDelegate.h */,
+				B9B4635E172BE1D900A37FE0 /* AppDelegate.m */,
+				B9B46377172BE21F00A37FE0 /* Feed */,
 				B941D804175B1DB20000DBD6 /* Menu */,
 				B957098917525D7F00531808 /* Options */,
 				B9B4637B172BE28800A37FE0 /* FriendAdder */,
-				B9B46377172BE21F00A37FE0 /* Feed */,
-				B9B4635D172BE1D900A37FE0 /* AppDelegate.h */,
-				B9B4635E172BE1D900A37FE0 /* AppDelegate.m */,
 				B93A5A2C172C01630056B4AE /* Defines.h */,
 				B9B46355172BE1D900A37FE0 /* Supporting Files */,
+				B941D829175B92FE0000DBD6 /* Generic */,
 			);
 			name = Friendcy;
 			path = Friendsy;
@@ -659,6 +695,12 @@
 				B941D81E175B4F090000DBD6 /* UIBarItem-check@2x.png in Resources */,
 				B941D821175B50780000DBD6 /* UIBarItem-back.png in Resources */,
 				B941D822175B50780000DBD6 /* UIBarItem-back@2x.png in Resources */,
+				B941D825175B908E0000DBD6 /* UIToolbar.png in Resources */,
+				B941D828175B90BF0000DBD6 /* UIToolbar@2x.png in Resources */,
+				B941D831175B9CEA0000DBD6 /* AccessoryView-group.png in Resources */,
+				B941D832175B9CEA0000DBD6 /* AccessoryView-group@2x.png in Resources */,
+				B941D833175B9CEA0000DBD6 /* AccessoryView-one.png in Resources */,
+				B941D834175B9CEA0000DBD6 /* AccessoryView-one@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,6 +733,8 @@
 				B941D7FE175A2EFA0000DBD6 /* MMDrawerVisualState.m in Sources */,
 				B941D7FF175A2EFA0000DBD6 /* UIViewController+MMDrawerController.m in Sources */,
 				B941D807175B1DDD0000DBD6 /* Menu.m in Sources */,
+				B941D82C175B93390000DBD6 /* PassthroughView.m in Sources */,
+				B941D839175BA7440000DBD6 /* JKIconButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,6 +14,7 @@
 
 #define gRSSurlPrefix @"http://www.thefancy.com/rss/"
 #define gFeedCellHeight 280
+#define gFeedSeparatorHeight 12
 #define gPlaceholderImage @""
 
 #define sHeaderFont @"Novecentowide-Bold"

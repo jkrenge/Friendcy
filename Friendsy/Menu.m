@@ -99,7 +99,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (!section) return 1;
-    else return feeds.count;
+    else return feeds.count+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -121,10 +121,24 @@
         
     } else {
         
-        [cell.textLabel setText:[[feeds objectAtIndex:indexPath.row] stringByReplacingOccurrencesOfString:gRSSurlPrefix withString:@""]];
-        ALog(@"%@", [feeds objectAtIndex:indexPath.row]);
+        if (!indexPath.row) {
+            
+            [cell.textLabel setText:@"All friends"];
+            [cell setAccessoryView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"AccessoryView-group"]]];
+            
+        } else {
+            
+            [cell.textLabel setText:[[feeds objectAtIndex:indexPath.row-1] stringByReplacingOccurrencesOfString:gRSSurlPrefix withString:@""]];
+            [cell setAccessoryView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"AccessoryView-one"]]];
+            
+        }
         
     }
+    
+    // style cell
+    
+    [cell.textLabel setTextColor:cLightColor];
+    [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]]];
     
     return cell;
 }
@@ -140,7 +154,10 @@
         
     } else {
         
-        // TODO: Limit feed to currently selected user
+        if (!indexPath.row) [_delegate didSelectFeed:@""];
+        else [_delegate didSelectFeed:[feeds objectAtIndex:indexPath.row-1]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:nToggleDrawer object:nil];
         
     }
     

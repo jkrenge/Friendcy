@@ -10,7 +10,7 @@
 #import "Defines.h"
 #import "AppDelegate.h"
 
-#import "BButton.h"
+#import "JKIconButton.h"
 
 #pragma mark - Defines
 
@@ -24,7 +24,7 @@
 #define kButtonHeight 40
 #define kButtonSpace 10
 
-#define kHidingOffset -200
+#define kHidingOffset -260
 #define kHiddenOpacity 0.1f
 #define kAnimDuration 0.25f
 
@@ -98,15 +98,22 @@
 
     [_delegate didEndInteractionWithCell];
     
-    if (topDrawer.frame.origin.x < -50) [self revealSubDrawer];
-    else [self hideSubDrawer];
+    if (_bottomDrawerIsRevealed) {
+        
+        if (topDrawer.frame.origin.x > kHidingOffset+40) [self hideSubDrawer];
+        else [self revealSubDrawer];
+        
+    } else {
+        
+        if (topDrawer.frame.origin.x < -50) [self revealSubDrawer];
+        else [self hideSubDrawer];
+        
+    }
     
 }
 
 - (void)revealSubDrawer
 {
-    
-    if (_bottomDrawerIsRevealed) return;
         
     _bottomDrawerIsRevealed = YES;
 
@@ -133,7 +140,7 @@
     // Set up path movement
     
     CABasicAnimation *moveOutAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
-    [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(kHidingOffset/2, gFeedCellHeight/2)]];
+    [moveOutAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake(kHidingOffset+160, gFeedCellHeight/2)]];
 
     // Group animations
     
@@ -200,15 +207,17 @@
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
     
-    if (flag && anim == [topDrawer.layer animationForKey:kKeyOfRevealAnimation]) {
+    if (anim == [topDrawer.layer animationForKey:kKeyOfRevealAnimation]) {
         
         [topDrawer setFrame:CGRectMake(kHidingOffset, 0, 320, gFeedCellHeight)];
         
-    } else if (flag && anim == [topDrawer.layer animationForKey:kKeyOfHideAnimation]) {
+    } else if (anim == [topDrawer.layer animationForKey:kKeyOfHideAnimation]) {
         
         [topDrawer setFrame:CGRectMake(0, 0, 320, gFeedCellHeight)];
         
     }
+    
+    [topDrawer.layer removeAllAnimations];
     
 }
 
@@ -382,7 +391,7 @@
     
     int availableWidth = 320 - (320+kHidingOffset);
     
-    bottomDrawer = [[UIView alloc] initWithFrame:CGRectMake(320-availableWidth-40, 0, availableWidth, gFeedCellHeight)];
+    bottomDrawer = [[UIView alloc] initWithFrame:CGRectMake(320-availableWidth, 0, availableWidth, gFeedCellHeight)];
     [bottomDrawer setAlpha:kHiddenOpacity];
     
     // calculate button frames
@@ -399,12 +408,16 @@
     
     // add buttons
     
-    BButton *detailBtn = [[BButton alloc] initWithFrame:[[btnRects objectAtIndex:0] CGRectValue] type:BButtonTypeDefault];
+    JKIconButton *detailBtn = [[JKIconButton alloc] initWithFrame:[[btnRects objectAtIndex:0] CGRectValue] andIcon:[UIImage imageNamed:@"UIBarItem-check"]];
     [detailBtn setTitle:@"Show details" forState:UIControlStateNormal];
+    [detailBtn.titleLabel setTextColor:cDarkColor];
+    [detailBtn.titleLabel setTextAlignment:NSTextAlignmentLeft];
     [detailBtn addTarget:self action:@selector(presentDetails) forControlEvents:UIControlEventTouchUpInside];
     [bottomDrawer addSubview:detailBtn];
     
-    BButton *shareBtn = [[BButton alloc] initWithFrame:[[btnRects objectAtIndex:1] CGRectValue] type:BButtonTypeDefault];
+    JKIconButton *shareBtn = [[JKIconButton alloc] initWithFrame:[[btnRects objectAtIndex:1] CGRectValue] andIcon:[UIImage imageNamed:@"UIBarItem-check"]];
+    [shareBtn.titleLabel setTextColor:cDarkColor];
+    [shareBtn.titleLabel setTextAlignment:NSTextAlignmentLeft];
     [shareBtn setTitle:@"Share this" forState:UIControlStateNormal];
     [shareBtn addTarget:self action:@selector(presentSharingOptions) forControlEvents:UIControlEventTouchUpInside];
     [bottomDrawer addSubview:shareBtn];

@@ -11,11 +11,17 @@
 #import "FriendAdder.h"
 #import "OptionsTable.h"
 
+@protocol MenuDelegate <NSObject>
+- (void)didSelectFeed:(NSString*)feed;
+@end
+
 @interface Menu : UITableViewController <FriendAdderDelegate, OptionsDelegate>
 {
     
     NSMutableArray *feeds;
     
 }
+
+@property (nonatomic, assign) id<MenuDelegate> delegate;
 
 @end

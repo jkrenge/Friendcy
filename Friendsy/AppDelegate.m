@@ -27,11 +27,14 @@
     Menu *menu = [[Menu alloc] initWithStyle:UITableViewStylePlain];
     UINavigationController *menuContainer = [[UINavigationController alloc] initWithRootViewController:menu];
     
+    [menu setDelegate:feed];
+    
     self.drawerController = [[MMDrawerController alloc] initWithCenterViewController:feedContainer rightDrawerViewController:menuContainer];
     
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModePanningNavigationBar];
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
     [self.drawerController setDrawerVisualStateBlock:[MMDrawerVisualState slideAndScaleVisualStateBlock]];
+    [self.drawerController setMaximumRightDrawerWidth:240];
     
     [self.window setRootViewController:self.drawerController];
     [self.window setBackgroundColor:[UIColor blackColor]];
@@ -46,6 +49,7 @@
     // Style
     
     [self styleUINavigationBar];
+    [self styleUIToolbar];
     
     return YES;
 }
@@ -87,6 +91,13 @@
 {
     
     [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
+    
+}
+
+- (void)styleUIToolbar
+{
+    
+    [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"UIToolbar"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
     
 }
 

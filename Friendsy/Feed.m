@@ -27,11 +27,7 @@
 
         // set up feeds
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSArray *currentFeeds = [defaults arrayForKey:@"feeds"];
-        
-        if (currentFeeds == nil) feeds = [[NSMutableArray alloc] init];
-        else feeds = [currentFeeds mutableCopy];
+        [self loadFeeds];
         
         // set up table source
         
@@ -39,6 +35,17 @@
         
     }
     return self;
+}
+
+- (void)loadFeeds
+{
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *currentFeeds = [defaults arrayForKey:@"feeds"];
+    
+    if (currentFeeds == nil) feeds = [[NSMutableArray alloc] init];
+    else feeds = [currentFeeds mutableCopy];
+    
 }
 
 - (void)viewDidLoad
@@ -81,9 +88,13 @@
     
     // style table
     
-    [self.tableView setRowHeight:gFeedCellHeight];
     [self.tableView setSeparatorColor:[UIColor clearColor]];
     [self.tableView setBackgroundColor:cLightColor];
+    
+    // prepare scroll shadow
+    
+    scrollShadow = [[PassthroughView alloc] initWithImage:[UIImage imageNamed:@"UINavigationBar-shadow"] andFrame:CGRectMake(0, 44, 320, 44) beingVisible:NO];
+    [self.navigationController.view addSubview:scrollShadow];
     
 }
 
@@ -202,6 +213,49 @@
     
 }
 
+#pragma mark - Refresh Control
+
+- (void)refreshViewShouldStart {
+    
+    [self.refreshControl beginRefreshing];
+    
+    if (self.tableView.contentOffset.y == 0) {
+        
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^(void){
+            
+            self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
+            
+        } completion:^(BOOL finished){
+            
+            [self refreshView];
+            
+        }];
+        
+    }
+}
+
+- (void)refreshView
+{
+    
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+    [refreshControl beginRefreshing];
+    
+    [self refreshContent];
+    
+}
+
+- (void)refreshViewDidFinish
+{
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MMM d, h:mm a"];
+    NSString *lastUpdated = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+    
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated];
+    [refreshControl endRefreshing];
+    
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -217,7 +271,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    return gFeedCellHeight;
+    return gFeedCellHeight+gFeedSeparatorHeight;
     
 }
 
@@ -246,46 +300,45 @@
     
 }
 
-#pragma mark - Refresh Control
+#pragma mark - Scroll view delegate
 
-- (void)refreshViewShouldStart {
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
     
-    [self.refreshControl beginRefreshing];
+    [scrollShadow show];
     
-    if (self.tableView.contentOffset.y == 0) {
-        
-        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^(void){
-            
-            self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
-            
-        } completion:^(BOOL finished){
-            
-            [self refreshView];
-            
-        }];
-        
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    
+    [self hideScrollShadow];
+    
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    
+    if (!decelerate) {
+        [self hideScrollShadow];
     }
-}
-
-- (void)refreshView
-{
-
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
-    [refreshControl beginRefreshing];
-    
-    [self refreshContent];
     
 }
 
-- (void)refreshViewDidFinish
+- (void)hideScrollShadow
 {
     
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"MMM d, h:mm a"];
-    NSString *lastUpdated = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+    int offset = self.tableView.contentOffset.y;
+    offset %= gFeedCellHeight+gFeedSeparatorHeight;
     
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated];
-    [refreshControl endRefreshing];
+    int smallerThan = 10;
+    int greaterThan = gFeedCellHeight-gFeedSeparatorHeight-4;
+    
+    BOOL hide = NO;
+    if (offset < smallerThan || offset > greaterThan) hide = YES;
+    
+    ALog(@"%@", (hide ? @"hide" : @"still visible"));
+    if (hide) [scrollShadow hide];
     
 }
 
@@ -336,6 +389,16 @@
 {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:nToggleDrawer object:nil];
+    
+}
+
+- (void)didSelectFeed:(NSString *)feed
+{
+    
+    if ([feed isEqualToString:@""]) [self loadFeeds];
+    else feeds = [[NSMutableArray alloc] initWithObjects:feed, nil];
+    
+    [self refreshView];
     
 }
 
