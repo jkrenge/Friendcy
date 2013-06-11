@@ -10,6 +10,6 @@
 
 @interface JKIconButton : UIButton
 
-- (id)initWithFrame:(CGRect)frame andIcon:(UIImage*)image;
+- (id)initWithFrame:(CGRect)frame icon:(UIImage*)image andTitle:(NSString*)title;
 
 @end

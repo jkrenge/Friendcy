@@ -55,67 +55,93 @@
 //        UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullscreenImage)];
 //        [image addGestureRecognizer:tapRec];
         
+        UISwipeGestureRecognizer *swipeLeftRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(revealSubDrawer)];
+        [swipeLeftRec setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [topDrawer addGestureRecognizer:swipeLeftRec];
+        
+        UIPanGestureRecognizer *panRec = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panTopDrawer:)];
+        [panRec setMinimumNumberOfTouches:1];
+        [panRec setMaximumNumberOfTouches:1];
+        [panRec setDelegate:self];
+        [topDrawer addGestureRecognizer:panRec];
+        
     }
     return self;
 }
 
 #pragma mark - Drawer interaction
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+
+- (void)panTopDrawer:(UIPanGestureRecognizer*)pan
 {
     
-    // Prepare bottom drawer
+    // prepare panning calculation
     
-    if (bottomDrawer == nil) {
-        [self loadBottomDrawer];
+    [pan.view.layer removeAllAnimations];
+	CGPoint translatedPoint = [pan translationInView:self.viewForBaselineLayout];
+    
+    // on start of panning
+	if(pan.state == UIGestureRecognizerStateBegan) {
+        
+        ALog(@"Start panning");
+        
+        // safe start position
+        panOriginX = pan.view.center.x;
+        panOriginY = pan.view.center.y;
+        
+        // Prepare bottom drawer
+        if (bottomDrawer == nil) {
+            [self loadBottomDrawer];
+        }
+
+        // block interaction with table itself
+        [_delegate didBeginInteractionWithCell];
+
+	}
+    
+    // on end of panning
+	else if(pan.state == UIGestureRecognizerStateEnded) {
+        
+        ALog(@"End panning");
+        
+        // reenable interaction with table itself
+        [_delegate didEndInteractionWithCell];
+        
+        // if panned far enough, perform animation
+        if (_bottomDrawerIsRevealed) {
+
+            if (topDrawer.frame.origin.x > kHidingOffset+40) [self hideSubDrawer];
+            else [self revealSubDrawer];
+
+        } else {
+
+            if (topDrawer.frame.origin.x < -40) [self revealSubDrawer];
+            else [self hideSubDrawer];
+            
+        }
+        
+	}
+    
+    // perform panning
+    else {
+        
+        translatedPoint = CGPointMake(panOriginX+translatedPoint.x, panOriginY);
+        [pan.view setCenter:translatedPoint];
+        
     }
     
-    // block interaction with table itself
-    
-    [_delegate didBeginInteractionWithCell];
-    
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event 
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan
 {
     
-    UITouch *aTouch = [touches anyObject];
-    CGPoint location = [aTouch locationInView:self];
-    CGPoint previousLocation = [aTouch previousLocationInView:self];
-    topDrawer.frame = CGRectOffset(topDrawer.frame, location.x-previousLocation.x, 0);
-
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    
-    [_delegate didEndInteractionWithCell];
-    
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-
-    [_delegate didEndInteractionWithCell];
-    
-    if (_bottomDrawerIsRevealed) {
-        
-        if (topDrawer.frame.origin.x > kHidingOffset+40) [self hideSubDrawer];
-        else [self revealSubDrawer];
-        
-    } else {
-        
-        if (topDrawer.frame.origin.x < -50) [self revealSubDrawer];
-        else [self hideSubDrawer];
-        
-    }
+    CGPoint translatedPoint = [pan translationInView:self.viewForBaselineLayout.superview];
+    return fabs(translatedPoint.x) > fabs(translatedPoint.y);
     
 }
 
 - (void)revealSubDrawer
 {
-        
-    _bottomDrawerIsRevealed = YES;
 
     // Prepare bottom drawer
     
@@ -161,10 +187,24 @@
     
 }
 
+- (void)hideSubDrawerFromScrolling
+{
+    
+    if (_bottomDrawerIsRevealed) {
+        
+        ALog(@"hide");
+        
+        _bottomDrawerIsRevealed = NO;
+        [self hideSubDrawer];
+        
+    }
+    
+}
+
 - (void)hideSubDrawer
 {
-        
-    _bottomDrawerIsRevealed = NO;
+    
+    ALog(@"");
 
     // Set up fade out effect
     
@@ -209,10 +249,12 @@
     
     if (anim == [topDrawer.layer animationForKey:kKeyOfRevealAnimation]) {
         
+        _bottomDrawerIsRevealed = YES;
         [topDrawer setFrame:CGRectMake(kHidingOffset, 0, 320, gFeedCellHeight)];
         
     } else if (anim == [topDrawer.layer animationForKey:kKeyOfHideAnimation]) {
         
+        _bottomDrawerIsRevealed = NO;
         [topDrawer setFrame:CGRectMake(0, 0, 320, gFeedCellHeight)];
         
     }
@@ -222,29 +264,6 @@
 }
 
 #pragma mark - Other interactivity
-
-- (void)showFullscreenImage
-{
-    
-    // calculate origin frame
-    
-    CGRect frame = image.frame;
-    frame.origin.y = [self calculateYforImageOnly:YES];
-    
-    // prepare image
-    
-    [image setContentMode:UIViewContentModeScaleAspectFill];
-    
-    // show fullscreen
-    
-    GGFullscreenImageViewController *fullscreen = [[GGFullscreenImageViewController alloc] init];
-    [fullscreen setJKstartFrame:frame];
-    [fullscreen setLiftedImageView:image];
-    
-    AppDelegate* myAppDelegate = [[UIApplication sharedApplication] delegate];
-    [myAppDelegate.drawerController presentViewController:fullscreen animated:YES completion:nil];
-    
-}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
@@ -257,6 +276,14 @@
 }
 
 #pragma mark - Navigation
+
+- (void)presentMenu
+{
+    
+    NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
+    [_delegate didSelectRowAtIndexPath:indexPath withAction:ActionKeyShowMenu];
+    
+}
 
 - (void)presentDetails
 {
@@ -280,6 +307,7 @@
 {
     
     [image setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:gPlaceholderImage]];
+    [image setupImageViewer];
     
 }
 
@@ -408,17 +436,11 @@
     
     // add buttons
     
-    JKIconButton *detailBtn = [[JKIconButton alloc] initWithFrame:[[btnRects objectAtIndex:0] CGRectValue] andIcon:[UIImage imageNamed:@"UIBarItem-check"]];
-    [detailBtn setTitle:@"Show details" forState:UIControlStateNormal];
-    [detailBtn.titleLabel setTextColor:cDarkColor];
-    [detailBtn.titleLabel setTextAlignment:NSTextAlignmentLeft];
+    JKIconButton *detailBtn = [[JKIconButton alloc] initWithFrame:[[btnRects objectAtIndex:0] CGRectValue] icon:[UIImage imageNamed:@"UIBarItem-details"] andTitle:@"Show details"];
     [detailBtn addTarget:self action:@selector(presentDetails) forControlEvents:UIControlEventTouchUpInside];
     [bottomDrawer addSubview:detailBtn];
     
-    JKIconButton *shareBtn = [[JKIconButton alloc] initWithFrame:[[btnRects objectAtIndex:1] CGRectValue] andIcon:[UIImage imageNamed:@"UIBarItem-check"]];
-    [shareBtn.titleLabel setTextColor:cDarkColor];
-    [shareBtn.titleLabel setTextAlignment:NSTextAlignmentLeft];
-    [shareBtn setTitle:@"Share this" forState:UIControlStateNormal];
+    JKIconButton *shareBtn = [[JKIconButton alloc] initWithFrame:[[btnRects objectAtIndex:1] CGRectValue] icon:[UIImage imageNamed:@"UIBarItem-share"] andTitle:@"Share this"];
     [shareBtn addTarget:self action:@selector(presentSharingOptions) forControlEvents:UIControlEventTouchUpInside];
     [bottomDrawer addSubview:shareBtn];
     
@@ -428,32 +450,16 @@
     
     // add interactivity to bottom drawer
     
-//    [bottomDrawer setUserInteractionEnabled:YES];
-//    
-//    UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
-//    [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
-//    [bottomDrawer addGestureRecognizer:swipeRightRec];
-//    
-//    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
-//    [bottomDrawer addGestureRecognizer:tapRec];
+    UISwipeGestureRecognizer *swipeLeftRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(presentMenu)];
+    [swipeLeftRec setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [bottomDrawer addGestureRecognizer:swipeLeftRec];
     
-}
-
-#pragma mark - Helper
-
-- (int)calculateYforImageOnly:(BOOL)onlyForImage
-{
+    UISwipeGestureRecognizer *swipeRightRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+    [swipeRightRec setDirection:UISwipeGestureRecognizerDirectionRight];
+    [bottomDrawer addGestureRecognizer:swipeRightRec];
     
-    CGRect frame;
-    if (onlyForImage) frame = image.frame;
-    else frame = topDrawer.frame;
-    
-    NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
-    int rowOffset = indexPath.row * gFeedCellHeight;
-    int scrollOffset = ((UITableView *)self.superview).contentOffset.y;
-    int result = 20. + 44. + rowOffset - scrollOffset + frame.origin.y;
-    
-    return result;
+    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSubDrawer)];
+    [bottomDrawer addGestureRecognizer:tapRec];
     
 }
 

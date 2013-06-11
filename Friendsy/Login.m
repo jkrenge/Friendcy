@@ -8,9 +8,7 @@
 
 #import "Login.h"
 
-@interface Login ()
-
-@end
+#import "Defines.h"
 
 @implementation Login
 
@@ -28,11 +26,64 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // appearance of navigation bar
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"UINavigationBar"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      cDarkColor,
+      UITextAttributeTextColor,
+      [UIColor colorWithRed:255. green:255. blue:255. alpha:1.],
+      UITextAttributeTextShadowColor,
+      [NSValue valueWithUIOffset:UIOffsetMake(0, 0)],
+      UITextAttributeTextShadowOffset,
+      [UIFont fontWithName:sHeaderFont size:sHeaderSize],
+      UITextAttributeFont,
+      nil]];
+    
+    // set up button to dismiss modal
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setImage:[UIImage imageNamed:@"UIBarItem-cancel"] forState:UIControlStateNormal];
+    [btn setFrame:CGRectMake(0, 0, 38, 28)];
+    [btn addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    [self.navigationItem setRightBarButtonItem:barBtn];
+    
+    [self.navigationItem setLeftBarButtonItem:nil];
+    
+    // style view
+    
+    [self.view setBackgroundColor:cLightColor];
+    [button_continue.titleLabel setFont:[UIFont fontWithName:sHeaderFont size:sHeaderSize]];
+    [button_continue setTitleColor:cDarkColor forState:UIControlStateNormal];
+    
+    // activate input field
+    
+    [input_fancyName becomeFirstResponder];
+    [input_fancyName setDelegate:self];
+    
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)cancel
+{
+    
+    [_delegate didFinishUserInput:@""];
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+
+    [self presentNextScreen:nil];
+    
+    return NO;
+    
 }
 
 - (IBAction)presentNextScreen:(id)sender

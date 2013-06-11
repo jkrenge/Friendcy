@@ -60,14 +60,22 @@
 - (void)didFinishUserInput:(NSString *)theFancyUsername
 {
     
-    // prepare the next screen 
-    
-    ProfileViewer *profileViewer = [[ProfileViewer alloc] initWithNibName:nil bundle:nil andUsername:theFancyUsername];
-    [profileViewer setDelegate:self];
-    
-    // present next screen
-
-    [navController pushViewController:profileViewer animated:YES];
+    if ([theFancyUsername isEqualToString:@""]) {
+        
+        [_delegate finishedAddingFriends];
+        
+    } else {
+        
+        // prepare the next screen
+        
+        ProfileViewer *profileViewer = [[ProfileViewer alloc] initWithNibName:nil bundle:nil andUsername:theFancyUsername];
+        [profileViewer setDelegate:self];
+        
+        // present next screen
+        
+        [navController pushViewController:profileViewer animated:YES];
+        
+    }
     
 }
 

@@ -41,10 +41,36 @@
 {
     [super viewDidLoad];
     
+    // appearance of navigation bar
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"UINavigationBar"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      cDarkColor,
+      UITextAttributeTextColor,
+      [UIColor colorWithRed:255. green:255. blue:255. alpha:1.],
+      UITextAttributeTextShadowColor,
+      [NSValue valueWithUIOffset:UIOffsetMake(0, 0)],
+      UITextAttributeTextShadowOffset,
+      [UIFont fontWithName:sHeaderFont size:sHeaderSize],
+      UITextAttributeFont,
+      nil]];
+    
     // prepare navigation bar
     
-    UIBarButtonItem *btn_finishedAddingFriends = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finish)];
-    [self.navigationItem setRightBarButtonItem:btn_finishedAddingFriends];
+    UIButton *btn_finishedAddingFriends = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn_finishedAddingFriends setImage:[UIImage imageNamed:@"UIBarItem-cancel"] forState:UIControlStateNormal];
+    [btn_finishedAddingFriends setFrame:CGRectMake(0, 0, 38, 28)];
+    [btn_finishedAddingFriends addTarget:self action:@selector(finish) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightBarBtn = [[UIBarButtonItem alloc] initWithCustomView:btn_finishedAddingFriends];
+    [self.navigationItem setRightBarButtonItem:rightBarBtn];
+    
+    UIButton *btn_backToLogin = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn_backToLogin setImage:[UIImage imageNamed:@"UIBarItem-back"] forState:UIControlStateNormal];
+    [btn_backToLogin setFrame:CGRectMake(0, 0, 38, 28)];
+    [btn_backToLogin addTarget:self action:@selector(didTapBackButton:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBarBtn = [[UIBarButtonItem alloc] initWithCustomView:btn_backToLogin];
+    [self.navigationItem setLeftBarButtonItem:leftBarBtn];
     
     // prepare web view
     
@@ -85,6 +111,13 @@
     ALog(@"");
     
     [_delegate manuallyGoBackToLogin];
+    
+}
+
+- (void)didTapBackButton:(id)sender
+{
+    
+    [self.navigationController popViewControllerAnimated:YES];
     
 }
 

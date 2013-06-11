@@ -12,10 +12,11 @@
 - (void)didFinishUserInput:(NSString*)theFancyUsername;
 @end
 
-@interface Login : UIViewController
+@interface Login : UIViewController <UITextFieldDelegate>
 {
     
     IBOutlet UITextField *input_fancyName;
+    IBOutlet UIButton *button_continue;
     
 }
 

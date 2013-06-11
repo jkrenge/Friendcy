@@ -10,13 +10,14 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <QuartzCore/QuartzCore.h>
 
-#import "GGFullScreenImageViewController.h"
+#import "MHFacebookImageViewer.h"
 
 #import "FeedItem.h"
 
 typedef enum {
     ActionKeyShowDetails = 0,
-    ActionKeyShowSharingOptions = 1
+    ActionKeyShowSharingOptions = 1,
+    ActionKeyShowMenu = 2
 } ActionKey;
 
 @protocol FeedCellActionDelegate <NSObject>
@@ -25,11 +26,13 @@ typedef enum {
 - (void)didEndInteractionWithCell;
 @end
 
-@interface FeedCell : UITableViewCell
+@interface FeedCell : UITableViewCell <UIGestureRecognizerDelegate>
 {
     
     BOOL _bottomDrawerIsRevealed;
     CGRect imageOrigin;
+    int panOriginX;
+    int panOriginY;
     
     UIView *topDrawer;
     UIView *bottomDrawer;
@@ -49,5 +52,7 @@ typedef enum {
 - (void)setItemTitle:(NSString*)_title;
 - (void)setItemDate:(NSString*)_date;
 - (void)setItemAuthor:(NSString*)_author;
+
+- (void)hideSubDrawerFromScrolling;
 
 @end

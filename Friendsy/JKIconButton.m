@@ -12,7 +12,7 @@
 
 @implementation JKIconButton
 
-- (id)initWithFrame:(CGRect)frame andIcon:(UIImage*)image
+- (id)initWithFrame:(CGRect)frame icon:(UIImage*)image andTitle:(NSString*)title
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -29,24 +29,29 @@
         
         int iconHeight = icon.bounds.size.height;
         int iconWidth = icon.bounds.size.width;
-        int labelHeight = self.titleLabel.bounds.size.height;
         int btnHeight = self.bounds.size.height;
         
         int startYofIcon = (btnHeight/2) - (iconHeight/2);
         int startXofIcon = startYofIcon;
-        int startYofLabel = (btnHeight/2) - (labelHeight/2);
-        int startXofLabel = iconWidth;
+        int startYofLabel = iconWidth+15;
         
         // apply positions
         
         [icon setFrame:CGRectMake(startXofIcon, startYofIcon, iconWidth, iconHeight)];
         [self addSubview:icon];
         
-        [self.titleLabel setFrame:CGRectMake(startXofLabel, startYofLabel, self.titleLabel.bounds.size.width, labelHeight)];
+        [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+        [self setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        
+        [self setTitleEdgeInsets:UIEdgeInsetsMake(0, startYofLabel, 0, 0)];
         
         // style label
         
+        [self setTitle:title forState:UIControlStateNormal];
+        
         [self.titleLabel setFont:[UIFont fontWithName:sHeaderFont size:sHeaderSize-6]];
+        [self.titleLabel setTextColor:cDarkColor];
+        [self.titleLabel setTextAlignment:NSTextAlignmentLeft];
         
     }
     return self;

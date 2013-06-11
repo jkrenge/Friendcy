@@ -19,6 +19,12 @@
 #import "NSString+HTML.h"
 #import "NSDate+InternetDateTime.h"
 
+typedef enum {
+    ScrollDirectionNone,
+    ScrollDirectionUp,
+    ScrollDirectionDown
+} ScrollDirection;
+
 @interface Feed : UITableViewController <MWFeedParserDelegate, FeedCellActionDelegate, MenuDelegate>
 {
     
@@ -26,6 +32,7 @@
     
     UIRefreshControl *refreshControl;
     PassthroughView *scrollShadow;
+    NSInteger lastScrollOffset;
     
     NSMutableArray *feeds;
     NSMutableArray *feedChecklist;

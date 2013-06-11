@@ -171,8 +171,8 @@
                            wasModified:YES]];
     
     [frameworks addObject:[[FrameworkDescription alloc]
-                           framework:@"GGFullScreenImage"
-                           withUrl:@"https://github.com/bogardon/GGFullscreenImageViewController"
+                           framework:@"MHFacebookImageViewer"
+                           withUrl:@"https://github.com/michaelhenry/MHFacebookImageViewer"
                            andDescription:@"Full screen view for images"
                            wasModified:YES]];
     

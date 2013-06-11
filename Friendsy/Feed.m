@@ -302,6 +302,15 @@
 
 #pragma mark - Scroll view delegate
 
+-(BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+{
+    
+    ALog(@"");
+    
+    return YES;
+    
+}
+
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     
@@ -328,17 +337,73 @@
 - (void)hideScrollShadow
 {
     
+    // get current relative position to cell
+    
     int offset = self.tableView.contentOffset.y;
     offset %= gFeedCellHeight+gFeedSeparatorHeight;
+    
+    // set boundaries
     
     int smallerThan = 10;
     int greaterThan = gFeedCellHeight-gFeedSeparatorHeight-4;
     
+    // hide shadow if possible
+    
     BOOL hide = NO;
     if (offset < smallerThan || offset > greaterThan) hide = YES;
-    
-    ALog(@"%@", (hide ? @"hide" : @"still visible"));
     if (hide) [scrollShadow hide];
+    
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    
+    // determine scroll direction
+    
+    ScrollDirection scrollDirection;
+    int scrollOffset = self.tableView.contentOffset.y;
+    if (lastScrollOffset < scrollOffset) scrollDirection = ScrollDirectionDown;
+    else if (lastScrollOffset > scrollOffset) scrollDirection = ScrollDirectionUp;
+    else scrollDirection = ScrollDirectionNone;
+    lastScrollOffset = scrollOffset;
+    
+    // check whether cell disappeared
+    
+    int hidingBorder = 65+gFeedSeparatorHeight;
+    int rowHeight = gFeedCellHeight+gFeedSeparatorHeight;
+    int rowToHide = -1;
+    int hide = NO;
+    
+    if (scrollDirection == ScrollDirectionDown) {
+        
+        rowToHide = scrollOffset / rowHeight;
+        scrollOffset %= rowHeight;
+        
+        if (scrollOffset > rowHeight-hidingBorder) hide = YES;
+        
+    } else if (scrollDirection == ScrollDirectionUp) {
+        
+        scrollOffset += self.view.bounds.size.height;
+        rowToHide = scrollOffset / rowHeight;
+        scrollOffset %= rowHeight;
+        
+        if (scrollOffset < hidingBorder) hide = YES;
+        
+    }
+    
+    // hide disappearing cell
+    
+    if (hide) {
+        
+        if (0 <= rowToHide && rowToHide < [self tableView:self.tableView numberOfRowsInSection:0]) {
+            
+            NSIndexPath *ip = [NSIndexPath indexPathForRow:rowToHide inSection:0];
+            FeedCell *cell = (FeedCell*)[self.tableView cellForRowAtIndexPath:ip];
+            [cell hideSubDrawerFromScrolling];
+            
+        }
+                
+    }
     
 }
 
@@ -361,6 +426,10 @@
             
         case ActionKeyShowSharingOptions:
             [self presentSharingOptionsForItem:item];
+            break;
+            
+        case ActionKeyShowMenu:
+            [self showMenu];
             break;
             
         default:
@@ -436,7 +505,7 @@
     NSArray *activityItems = @[shareText, shareLink];
     
     UIActivityViewController *shareOptions = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-    [shareOptions setExcludedActivityTypes:@[UIActivityTypeAssignToContact, UIActivityTypePostToWeibo, UIActivityTypePrint]];
+    [shareOptions setExcludedActivityTypes:@[UIActivityTypeAssignToContact, UIActivityTypePostToWeibo, UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeMessage]];
     
     [self presentViewController:shareOptions animated:YES completion:nil];
     
