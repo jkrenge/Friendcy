@@ -81,6 +81,9 @@
 		B9B4637A172BE24100A37FE0 /* Feed.m in Sources */ = {isa = PBXBuildFile; fileRef = B9B46379172BE24100A37FE0 /* Feed.m */; };
 		B9B4637F172BE2A200A37FE0 /* Login.m in Sources */ = {isa = PBXBuildFile; fileRef = B9B4637D172BE2A200A37FE0 /* Login.m */; };
 		B9B46380172BE2A200A37FE0 /* Login.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9B4637E172BE2A200A37FE0 /* Login.xib */; };
+		B9B73273177AEA3900DFDEB3 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B9B73272177AEA3900DFDEB3 /* MBProgressHUD.m */; };
+		B9B73275177B18D200DFDEB3 /* UITabelView-Menu-selectedBG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B73274177B18D200DFDEB3 /* UITabelView-Menu-selectedBG@2x.png */; };
+		B9B73279177B18F700DFDEB3 /* UITabelView-Menu-selectedBG.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B73278177B18F700DFDEB3 /* UITabelView-Menu-selectedBG.png */; };
 		B9C372451765236C00F27BAE /* MHFacebookImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C372441765236C00F27BAE /* MHFacebookImageViewer.m */; };
 		B9C372481765252400F27BAE /* UIBarItem-check-white.png in Resources */ = {isa = PBXBuildFile; fileRef = B9C372461765252400F27BAE /* UIBarItem-check-white.png */; };
 		B9C372491765252400F27BAE /* UIBarItem-check-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9C372471765252400F27BAE /* UIBarItem-check-white@2x.png */; };
@@ -223,6 +226,10 @@
 		B9B4637C172BE2A200A37FE0 /* Login.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Login.h; sourceTree = "<group>"; };
 		B9B4637D172BE2A200A37FE0 /* Login.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Login.m; sourceTree = "<group>"; };
 		B9B4637E172BE2A200A37FE0 /* Login.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Login.xib; sourceTree = "<group>"; };
+		B9B73271177AEA3900DFDEB3 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		B9B73272177AEA3900DFDEB3 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		B9B73274177B18D200DFDEB3 /* UITabelView-Menu-selectedBG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UITabelView-Menu-selectedBG@2x.png"; path = "Artwork/UITabelView-Menu-selectedBG@2x.png"; sourceTree = "<group>"; };
+		B9B73278177B18F700DFDEB3 /* UITabelView-Menu-selectedBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UITabelView-Menu-selectedBG.png"; path = "Artwork/UITabelView-Menu-selectedBG.png"; sourceTree = "<group>"; };
 		B9C372431765236C00F27BAE /* MHFacebookImageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHFacebookImageViewer.h; sourceTree = "<group>"; };
 		B9C372441765236C00F27BAE /* MHFacebookImageViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHFacebookImageViewer.m; sourceTree = "<group>"; };
 		B9C372461765252400F27BAE /* UIBarItem-check-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "UIBarItem-check-white.png"; path = "Artwork/UIBarItem-check-white.png"; sourceTree = "<group>"; };
@@ -382,6 +389,8 @@
 				B910D8891757804200A7F6D9 /* UINavigationBar-shadow@2x.png */,
 				B941D823175B908E0000DBD6 /* UIToolbar.png */,
 				B941D827175B90BF0000DBD6 /* UIToolbar@2x.png */,
+				B9B73278177B18F700DFDEB3 /* UITabelView-Menu-selectedBG.png */,
+				B9B73274177B18D200DFDEB3 /* UITabelView-Menu-selectedBG@2x.png */,
 			);
 			name = "UI Graphics";
 			sourceTree = "<group>";
@@ -520,6 +529,7 @@
 		B9B4634D172BE1D900A37FE0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9B73270177AEA2600DFDEB3 /* MBProgressHUD */,
 				B9C372421765235300F27BAE /* MHFacebookImageViewer */,
 				B941D7F3175A2EE00000DBD6 /* MMDrawerController */,
 				B957098517525D1000531808 /* HCPushBackAnimation */,
@@ -595,6 +605,15 @@
 				B93A5A26172BF0EA0056B4AE /* ProfileViewer.m */,
 			);
 			name = FriendAdder;
+			sourceTree = "<group>";
+		};
+		B9B73270177AEA2600DFDEB3 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				B9B73271177AEA3900DFDEB3 /* MBProgressHUD.h */,
+				B9B73272177AEA3900DFDEB3 /* MBProgressHUD.m */,
+			);
+			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
 		B9C372421765235300F27BAE /* MHFacebookImageViewer */ = {
@@ -757,6 +776,8 @@
 				B96FA74D1767BCAF00F14E5B /* 486-fancy@2x.png in Resources */,
 				B96FA7501767BEF900F14E5B /* UIButton-continue.png in Resources */,
 				B96FA7511767BEF900F14E5B /* UIButton-continue@2x.png in Resources */,
+				B9B73275177B18D200DFDEB3 /* UITabelView-Menu-selectedBG@2x.png in Resources */,
+				B9B73279177B18F700DFDEB3 /* UITabelView-Menu-selectedBG.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -791,6 +812,7 @@
 				B941D82C175B93390000DBD6 /* PassthroughView.m in Sources */,
 				B941D839175BA7440000DBD6 /* JKIconButton.m in Sources */,
 				B9C372451765236C00F27BAE /* MHFacebookImageViewer.m in Sources */,
+				B9B73273177AEA3900DFDEB3 /* MBProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

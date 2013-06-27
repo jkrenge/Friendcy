@@ -82,12 +82,54 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    
+    if (section == 1) return 40;
+    else return 0;
+    
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+    if (section == 1)
+    {
+        
+        UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+        [header setBackgroundColor:cLightColor];
+
+        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 29)];
+        [title setFont:[UIFont fontWithName:sHeaderFont size:sHeaderSize-4]];
+        [title setTextColor:cDarkColor];
+        [title setBackgroundColor:cLightColor];
+        [title setText:@"Used frameworks"];
+        
+        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(10, 39, 200, 1)];
+        [line setBackgroundColor:cDarkColor];
+        
+        [header addSubview:title];
+        [header addSubview:line];
+        
+        return header;
+        
+    }
+    
+    else return nil;
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return usedFrameworks.count;
+    
+    if (section == 0) return 1;
+    else if (section == 1) return usedFrameworks.count;
+    
+    else return 0;
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -95,22 +137,65 @@
     
     // prepare cell
     
-    static NSString *CellIdentifier = @"OptionsCell";
+    static NSString *OptionCellIdentifier = @"OptionsCell";
+    static NSString *LinkCellIdentifier = @"LinkCell";
     
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    [cell setFrame:CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y, cell.bounds.size.width, kHeightOfRow)];
+    UITableViewCell* cell;
     
-    // get content
-    
-    FrameworkDescription *content = [usedFrameworks objectAtIndex:indexPath.row];
-    
-    // set content of cell
-    
-    [cell.textLabel setText:content.name];
-    [cell.textLabel setTextColor:cDarkColor];
-    [cell.detailTextLabel setText:content.description];
-    [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    if (indexPath.section == 0) {
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:OptionCellIdentifier];
+        if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:OptionCellIdentifier];
+        [cell setFrame:CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y, cell.bounds.size.width, kHeightOfRow)];
+        
+        // set content
+        
+        [cell.imageView setImage:[UIImage imageNamed:@"486-fancy"]];
+        [cell.textLabel setText:@"username"];
+        
+        // prepare textfield
+        
+        int width = 160;
+        int height = 30;
+        
+        username = [[UITextField alloc] initWithFrame:CGRectMake(cell.viewForBaselineLayout.frame.size.width-width-20, (kHeightOfRow-height)/2+8, width, height)];
+        
+        // style textfield
+        
+        [username setBackgroundColor:[UIColor clearColor]];
+        [username setClearButtonMode:UITextFieldViewModeWhileEditing];
+        [username setClearsOnBeginEditing:YES];
+        
+        [username setReturnKeyType:UIReturnKeyDone];
+        
+        // install textfield
+        
+        [username setDelegate:self];
+        [cell.viewForBaselineLayout addSubview:username];
+        
+        // read value
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [username setText:[defaults objectForKey:UDUsername]];
+        
+    } else if (indexPath.section == 1) {
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:LinkCellIdentifier];
+        if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:LinkCellIdentifier];
+        [cell setFrame:CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y, cell.bounds.size.width, kHeightOfRow)];
+        
+        // get content
+        
+        FrameworkDescription *content = [usedFrameworks objectAtIndex:indexPath.row];
+        
+        // set content of cell
+        
+        [cell.textLabel setText:content.name];
+        [cell.textLabel setTextColor:cDarkColor];
+        [cell.detailTextLabel setText:content.description];
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        
+    }
     
     return cell;
 }
@@ -120,28 +205,63 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    FrameworkDescription *content = [usedFrameworks objectAtIndex:indexPath.row];
-
-    // prepare browser
-    
-    if (webBrowser == nil) {
-        webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:content.url]];
-        [webBrowser setMode:TSMiniWebBrowserModeNavigation];
-//        [webBrowser setBarStyle:UIBarStyleDefault];
+    if (indexPath.section == 0)
+    {
         
-        [webBrowser setShowURLStringOnActionSheetTitle:YES];
-        [webBrowser setShowPageTitleOnTitleBar:YES];
-        [webBrowser setShowActionButton:YES];
-        [webBrowser setShowReloadButton:NO];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+    }
+    else if (indexPath.section == 1)
+    {
+        
+        FrameworkDescription *content = [usedFrameworks objectAtIndex:indexPath.row];
+        
+        // prepare browser
+        
+        if (webBrowser == nil) {
+            webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:content.url]];
+            [webBrowser setMode:TSMiniWebBrowserModeNavigation];
+            
+            [webBrowser setShowURLStringOnActionSheetTitle:YES];
+            [webBrowser setShowPageTitleOnTitleBar:YES];
+            [webBrowser setShowActionButton:YES];
+            [webBrowser setShowReloadButton:NO];
+        }
+        
+        // load required content
+        
+        [webBrowser loadURL:[NSURL URLWithString:content.url]];
+        
+        // push view
+        
+        [self.navigationController pushViewController:webBrowser animated:YES];
+        
     }
     
-    // load required content
+}
+
+#pragma mark - Text field delegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
     
-    [webBrowser loadURL:[NSURL URLWithString:content.url]];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:username.text forKey:UDUsername];
+    [defaults synchronize];
     
-    // push view
+    return YES;
     
-    [self.navigationController pushViewController:webBrowser animated:YES];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:username.text forKey:UDUsername];
+    [defaults synchronize];
+    
+    [username resignFirstResponder];
+    return YES;
     
 }
 
@@ -166,8 +286,14 @@
     
     [frameworks addObject:[[FrameworkDescription alloc]
                            framework:@"MMDrawerController"
-                           withUrl:@"https://github.com/mutualmobile/MMDrawerController"
-                           andDescription:@"Drawer management for main view"
+                           withUrl:@"https://github.com/jdg/MBProgressHUD"
+                           andDescription:@"Activity and progress indicators"
+                           wasModified:YES]];
+    
+    [frameworks addObject:[[FrameworkDescription alloc]
+                           framework:@"MBProgressHUD"
+                           withUrl:@"https://github.com/michaelhenry/MHFacebookImageViewer"
+                           andDescription:@"Full screen view for images"
                            wasModified:YES]];
     
     [frameworks addObject:[[FrameworkDescription alloc]

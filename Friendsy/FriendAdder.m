@@ -22,22 +22,23 @@
         // present login only if no user data is inserted yet
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *theFancyUsername = [defaults stringForKey:@"theFancyUsername"];
+        NSString *theFancyUsername = [defaults stringForKey:UDUsername];
+        
+        Login *login = [[Login alloc] initWithNibName:@"Login" bundle:nil];
+        [login setDelegate:self];
+        
+        navController = [[UINavigationController alloc] initWithRootViewController:login];
 
         if (theFancyUsername == nil || [theFancyUsername isEqualToString:@""]) {
             
-            Login *login = [[Login alloc] initWithNibName:@"Login" bundle:nil];
-            [login setDelegate:self];
-            
-            navController = [[UINavigationController alloc] initWithRootViewController:login];
+            // empty
             
         } else {
             
             ProfileViewer *profileViewer = [[ProfileViewer alloc] initWithNibName:nil bundle:nil andUsername:theFancyUsername];
-            [profileViewer showManuallyGoBackToLoginButton];
             [profileViewer setDelegate:self];
             
-            navController = [[UINavigationController alloc] initWithRootViewController:profileViewer];
+            [navController pushViewController:profileViewer animated:NO];
             
         }
         
@@ -76,24 +77,6 @@
         [navController pushViewController:profileViewer animated:YES];
         
     }
-    
-}
-
-- (void)manuallyGoBackToLogin
-{
-    
-    ALog(@"");
-    
-    // TODO: make it actually work
-    
-    Login *login = [[Login alloc] initWithNibName:@"Login" bundle:nil];
-    [login setDelegate:self];
-    
-    NSMutableArray *vcs =  [NSMutableArray arrayWithArray:navController.navigationController.viewControllers];
-    [vcs insertObject:login atIndex:0];
-    [navController.navigationController setViewControllers:vcs animated:NO];
-    
-    [navController.navigationController popViewControllerAnimated:YES];
     
 }
 

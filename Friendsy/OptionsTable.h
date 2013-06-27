@@ -14,9 +14,10 @@
 - (void)didFinishOptions;
 @end
 
-@interface OptionsTable : UITableViewController
+@interface OptionsTable : UITableViewController <UITextFieldDelegate>
 {
     
+    UITextField *username;
     NSArray *usedFrameworks;
     
     TSMiniWebBrowser *webBrowser;

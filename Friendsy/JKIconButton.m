@@ -53,6 +53,9 @@
         [self.titleLabel setTextColor:cDarkColor];
         [self.titleLabel setTextAlignment:NSTextAlignmentLeft];
         
+        [self setTitleColor:cDarkColor forState:UIControlStateNormal];
+        [self setTitleColor:cDarkColor forState:UIControlStateHighlighted];
+        
     }
     return self;
 }

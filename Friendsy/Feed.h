@@ -15,6 +15,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "MWFeedParser.h"
 #import "TSMiniWebBrowser.h"
+#import "MBProgressHUD.h"
 
 #import "NSString+HTML.h"
 #import "NSDate+InternetDateTime.h"
@@ -25,12 +26,16 @@ typedef enum {
     ScrollDirectionDown
 } ScrollDirection;
 
-@interface Feed : UITableViewController <MWFeedParserDelegate, FeedCellActionDelegate, MenuDelegate>
+#define AlertViewTag_scrollToTop 1
+
+@interface Feed : UITableViewController <MWFeedParserDelegate, FeedCellActionDelegate, MenuDelegate, UIAlertViewDelegate>
 {
     
     NSDateFormatter *dateFormatter;
     
     UIRefreshControl *refreshControl;
+    MBProgressHUD *activityIndicator;
+    int numOfTasks;
     PassthroughView *scrollShadow;
     NSInteger lastScrollOffset;
     

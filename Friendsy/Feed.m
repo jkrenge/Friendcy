@@ -55,6 +55,13 @@
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"hh:mm 'am' dd.MM.yy"];
     
+    UITapGestureRecognizer *tapScrollToTop = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shouldScrollToTop)];
+    [self.navigationController.navigationBar addGestureRecognizer:tapScrollToTop];
+    
+    UISwipeGestureRecognizer *swipeLeftRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu)];
+    [swipeLeftRec setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [self.tableView.backgroundView addGestureRecognizer:swipeLeftRec];
+    
     // appearance of navigation bar
     
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"UINavigationBar"] forBarMetrics:UIBarMetricsDefault];
@@ -84,6 +91,7 @@
     refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Pull to Refresh"]];
     [refreshControl addTarget:self action:@selector(refreshView) forControlEvents:UIControlEventValueChanged];
+    [refreshControl setTintColor:cDarkColor];
     self.refreshControl = refreshControl;
     
     // style table
@@ -104,7 +112,7 @@
     if (feedItems.count == 0) {
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *theFancyUsername = [defaults stringForKey:@"theFancyUsername"];
+        NSString *theFancyUsername = [defaults stringForKey:UDUsername];
         
         if (!(theFancyUsername == nil || [theFancyUsername isEqualToString:@""]))
             [self refreshViewShouldStart];
@@ -123,8 +131,6 @@
 - (void)refreshContent
 {
     
-    ALog(@"");
-    
     // break if the user didn't add any feeds to the stream
     
     if (feeds.count == 0) {
@@ -136,27 +142,65 @@
         
     }
     
-    // add all feeds to the parser queue
+    // prepare activity indicator
     
-    feedItems = [[NSMutableArray alloc] init];
-    feedChecklist = [feeds mutableCopy];
+    activityIndicator = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
     
-    for (NSString *feed in feeds) {
+    [activityIndicator setLabelText:@"Refreshing stream..."];
+    [activityIndicator setMode:MBProgressHUDModeDeterminate];
+    [activityIndicator setProgress:.0];
+    [activityIndicator setAnimationType:MBProgressHUDAnimationZoom];
+    
+    [self.navigationController.view addSubview:activityIndicator];
+    
+    [activityIndicator show:YES];
+    
+    double delayInSeconds = 0.2;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
-        MWFeedParser *feedParser = [[MWFeedParser alloc] initWithFeedURL:[NSURL URLWithString:feed]];
-        [feedParser setDelegate:self];
+        // prepare progress indicator
         
-        [feedParser setFeedParseType:ParseTypeItemsOnly];
-        [feedParser setConnectionType:ConnectionTypeSynchronously];
+        numOfTasks = feeds.count + 1;
         
-        [feedParser parse];
+        // add all feeds to the parser queue
         
-    }
+        feedItems = [[NSMutableArray alloc] init];
+        feedChecklist = [feeds mutableCopy];
+        
+        for (NSString *feed in feeds) {
+            
+            MWFeedParser *feedParser = [[MWFeedParser alloc] initWithFeedURL:[NSURL URLWithString:feed]];
+            [feedParser setDelegate:self];
+            
+            [feedParser setFeedParseType:ParseTypeItemsOnly];
+            [feedParser setConnectionType:ConnectionTypeAsynchronously];
+            
+            [feedParser parse];
+            
+        }
+        
+    });
+    
+    // update progress
+    
+    [activityIndicator setProgress:activityIndicator.progress + (float)(1.0/(float)numOfTasks)];
     
 }
 
 -(void)feedParser:(MWFeedParser *)parser didFailWithError:(NSError *)error
 {
+    
+    // mark feed as done
+    
+    NSString *finishedFeed = parser.url.description;
+    [feedChecklist removeObject:finishedFeed];
+    
+    [activityIndicator setProgress:activityIndicator.progress + (float)(1.0/(float)numOfTasks)];
+    
+    [self feedParserCompleteParsing];
+    
+    // show error
     
     NSString *username = [[parser.url.description componentsSeparatedByString:@"/"] lastObject];
     NSString *errorMessage = [NSString stringWithFormat:@"%@ for user %@", EXCERPT(error.description, 30), username];
@@ -169,8 +213,6 @@
 -(void)feedParser:(MWFeedParser *)parser didParseFeedItem:(MWFeedItem *)item
 {
     
-//    ALog(@"%@", item.description);
-    
     FeedItem *feedItem = [[FeedItem alloc] initWithFeedItem:item];
     [feedItems addObject:feedItem];
     
@@ -179,35 +221,56 @@
 -(void)feedParserDidFinish:(MWFeedParser *)parser
 {
     
+    ALog(@"");
+    
     [self.tableView reloadData];
+    
+    // mark feed as done
     
     NSString *finishedFeed = parser.url.description;
     [feedChecklist removeObject:finishedFeed];
     
+    [activityIndicator setProgress:activityIndicator.progress + (float)(1.0/(float)numOfTasks)];
+    
+    [self feedParserCompleteParsing];
+    
+}
+
+- (void)feedParserCompleteParsing
+{
+    
     if (feedChecklist.count == 0) {
+        
+        ALog(@"done");
         
         NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO];
         NSSortDescriptor *sortByTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:NO];
         [feedItems sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate, sortByTitle, nil]];
         
-        NSMutableIndexSet *indexesToBeRemoved = [[NSMutableIndexSet alloc] init];
-        
-        for (int i = 0; i < feedItems.count-1; i++) {
-            FeedItem *checkForDuplicate = [feedItems objectAtIndex:i];
+        if (feedItems.count > 0) {
             
-            for (int j = i+1; j < feedItems.count; j++) {
-                FeedItem *compareAsDuplicate = [feedItems objectAtIndex:j];
+            NSMutableIndexSet *indexesToBeRemoved = [[NSMutableIndexSet alloc] init];
+            
+            for (int i = 0; i < feedItems.count-1; i++) {
+                FeedItem *checkForDuplicate = [feedItems objectAtIndex:i];
                 
-                if ([checkForDuplicate equals:compareAsDuplicate]) {
-                    [indexesToBeRemoved addIndex:i];
-                    break;
+                for (int j = i+1; j < feedItems.count; j++) {
+                    FeedItem *compareAsDuplicate = [feedItems objectAtIndex:j];
+                    
+                    if ([checkForDuplicate equals:compareAsDuplicate]) {
+                        [indexesToBeRemoved addIndex:i];
+                        break;
+                    }
                 }
             }
+            
+            [feedItems removeObjectsAtIndexes:indexesToBeRemoved];
+            
         }
         
-        [feedItems removeObjectsAtIndexes:indexesToBeRemoved];
-        
         [self refreshViewDidFinish];
+        
+        [activityIndicator hide:YES];
         
     }
     
@@ -302,16 +365,44 @@
 
 #pragma mark - Scroll view delegate
 
--(BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+- (void)shouldScrollToTop
 {
     
-    ALog(@"");
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Nach oben scrollen?" message:nil delegate:self cancelButtonTitle:@"Abbrechen" otherButtonTitles:@"Nach oben", nil];
+    [alert setTag:AlertViewTag_scrollToTop];
     
-    return YES;
+    [alert show];
     
 }
 
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    
+    if (alertView.tag == AlertViewTag_scrollToTop) {
+        
+        if (buttonIndex) {
+            
+            [self scrollToTop];
+            
+        }
+        
+    }
+    
+}
+
+- (void)scrollToTop
+{
+    
+    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+    double delayInSeconds = 0.3;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self hideScrollShadow];
+    });
+    
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     
     [scrollShadow show];
@@ -325,7 +416,7 @@
     
 }
 
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     
     if (!decelerate) {
@@ -369,7 +460,7 @@
     
     // check whether cell disappeared
     
-    int hidingBorder = 65+gFeedSeparatorHeight;
+    int hidingBorder = 105+gFeedSeparatorHeight;
     int rowHeight = gFeedCellHeight+gFeedSeparatorHeight;
     int rowToHide = -1;
     int hide = NO;

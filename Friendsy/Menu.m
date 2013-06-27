@@ -28,6 +28,8 @@
     [super viewDidLoad];
     [self loadMenuContents];
     
+    selectedStream = 0;
+    
     // set up button to start friend adder
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -64,6 +66,19 @@
 {
     
     [self loadMenuContents];
+    
+    // handle selection
+    
+    if (selectedStream < [self.tableView numberOfRowsInSection:1]) {
+        
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForItem:selectedStream inSection:1] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        
+    } else {
+        
+        selectedStream = 0;
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForItem:selectedStream inSection:1] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        
+    }
     
 }
 
@@ -138,7 +153,7 @@
     // style cell
     
     [cell.textLabel setTextColor:cLightColor];
-    [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]]];
+    [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITabelView-Menu-selectedBG"]]];
     
     return cell;
 }
@@ -153,6 +168,8 @@
         [self loadFriendAdder];
         
     } else {
+        
+        selectedStream = indexPath.row;
         
         if (!indexPath.row) [_delegate didSelectFeed:@""];
         else [_delegate didSelectFeed:[feeds objectAtIndex:indexPath.row-1]];
@@ -180,9 +197,13 @@
 - (void)finishedAddingFriends
 {
     
+    [self loadMenuContents];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:nModalDismiss object:nil];
     
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
     
 }
 

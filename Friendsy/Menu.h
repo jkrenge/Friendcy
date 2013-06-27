@@ -20,6 +20,8 @@
     
     NSMutableArray *feeds;
     
+    int selectedStream;
+    
 }
 
 @property (nonatomic, assign) id<MenuDelegate> delegate;

@@ -47,8 +47,7 @@
 #define kTabBarHeight   49
 
 enum actionSheetButtonIndex {
-	kSafariButtonIndex,
-	kChromeButtonIndex,
+	kSafariButtonIndex
 };
 
 #pragma mark - Private Methods
@@ -238,6 +237,14 @@ enum actionSheetButtonIndex {
 {
     [super viewDidLoad];
     
+    // Friendcy customs
+    
+    fancyURL = @"";
+    forwardFancy = NO;
+    
+    fancyButtonIndex = -1;
+    chromeButtonIndex = -1;
+    
     // Main view frame.
     if (mode == TSMiniWebBrowserModeTabBar) {
         CGFloat viewWidth = [UIScreen mainScreen].bounds.size.width;
@@ -380,7 +387,15 @@ enum actionSheetButtonIndex {
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
         // Chrome is installed, add the option to open in chrome.
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
+        chromeButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
+    }
+    
+    // Friendcy customs
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fancy://"]]) {
+        if (![fancyURL isEqualToString:@""]) {
+            fancyButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Fancy", nil)];
+        }
     }
     
     actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
@@ -410,7 +425,7 @@ enum actionSheetButtonIndex {
     if (buttonIndex == kSafariButtonIndex) {
         [[UIApplication sharedApplication] openURL:theURL];
     }
-    else if (buttonIndex == kChromeButtonIndex) {
+    else if (buttonIndex == chromeButtonIndex) {
         NSString *scheme = theURL.scheme;
         
         // Replace the URL Scheme with the Chrome equivalent.
@@ -433,6 +448,15 @@ enum actionSheetButtonIndex {
             [[UIApplication sharedApplication] openURL:chromeURL];
         }
     }
+    
+    // Friendcy customs
+    
+    else if (buttonIndex == fancyButtonIndex) {
+        
+        [self openFancyApp];
+        
+    }
+        
 }
 
 #pragma mark - Actions
@@ -462,6 +486,7 @@ enum actionSheetButtonIndex {
 #pragma mark - Public Methods
 
 - (void)setFixedTitleBarText:(NSString*)newTitleBarText {
+    ALog(@"%@", newTitleBarText);
     forcedTitleBarText = newTitleBarText;
     showPageTitleOnTitleBar = NO;
 }
@@ -475,9 +500,72 @@ enum actionSheetButtonIndex {
     }
 }
 
+#pragma mark - Friendcy customization
+
+- (void)addFancyLink
+{
+    
+//    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fancy://"]]) {
+    
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btn setImage:[UIImage imageNamed:@"486-fancy"] forState:UIControlStateNormal];
+        [btn setFrame:CGRectMake(0, 0, 24, 28)];
+        
+        [btn addTarget:self action:@selector(openFancyApp) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *barBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        [self.navigationItem setRightBarButtonItem:barBtn animated:YES];
+        
+//    }
+    
+}
+
+- (void)openFancyApp
+{
+    
+    [self scheduleReturnNotification];
+    
+    forwardFancy = YES;
+    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:fancyURL]]];
+    
+}
+
+- (void)scheduleReturnNotification
+{
+    
+    // determine fire date
+    
+    int secondsToWaitForNotification = 10;
+    
+    NSDate *now = [NSDate date];
+    NSDate *fire = [now dateByAddingTimeInterval:(secondsToWaitForNotification)];
+    
+    
+    // set up notification
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    if (localNotification == nil) return;
+    [localNotification setFireDate:fire];
+    [localNotification setTimeZone:[NSTimeZone defaultTimeZone]];
+    
+    // set properties of notification
+    
+    [localNotification setAlertBody:@"Return to Friendcy?"];
+    [localNotification setAlertAction:@"Open Friendcy"];
+    [localNotification setSoundName:UILocalNotificationDefaultSoundName];
+    
+    // schedule
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    
+    ALog(@"%@", request.URL.absoluteString);
+    
     if ([[request.URL absoluteString] hasPrefix:@"sms:"]) {
         [[UIApplication sharedApplication] openURL:request.URL];
         return NO;
@@ -490,6 +578,23 @@ enum actionSheetButtonIndex {
 			[[request.URL absoluteString] hasPrefix:@"http://phobos.apple.com/"]) {
 			[[UIApplication sharedApplication] openURL:request.URL];
 			return NO;
+		}
+        
+		if ([[request.URL absoluteString] hasPrefix:@"fancy://"]) {
+            fancyURL = [request.URL absoluteString];
+
+            if (forwardFancy) {
+                
+                forwardFancy = NO;
+                return YES;
+                
+            } else {
+                
+                [self addFancyLink];
+                return NO;
+                
+            }
+            
 		}
 		
 		else
@@ -548,6 +653,7 @@ enum actionSheetButtonIndex {
     // Show page title on title bar?
     if (showPageTitleOnTitleBar) {
         NSString *pageTitle = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        pageTitle = [pageTitle stringByReplacingOccurrencesOfString:@"Fancy - " withString:@""];
         [self setTitleBarText:pageTitle];
     }
     

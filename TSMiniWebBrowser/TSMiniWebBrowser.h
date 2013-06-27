@@ -38,6 +38,14 @@ typedef enum {
 } TSMiniWebBrowserMode;
 
 @interface TSMiniWebBrowser : UIViewController <UIWebViewDelegate, UIActionSheetDelegate> {
+
+    // Friendcy customs
+    
+    NSString *fancyURL;
+    BOOL forwardFancy;
+    int fancyButtonIndex;
+    int chromeButtonIndex;
+    
     // URL
     NSURL *urlToLoad;
     

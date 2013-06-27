@@ -8,61 +8,22 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Friendsy/ProfileViewer.m"
-         timestampString = "392675985.59508"
+         timestampString = "393948375.521205"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "217"
-         endingLineNumber = "217">
+         startingLineNumber = "228"
+         endingLineNumber = "228">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Friendsy/ProfileViewer.m"
-         timestampString = "392675985.59508"
+         timestampString = "393948375.521205"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "263"
-         endingLineNumber = "263">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Friendsy/Feed.m"
-         timestampString = "392506240.334229"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "190"
-         endingLineNumber = "190"
-         landmarkName = "-feedParserDidFinish:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Friendsy/Feed.m"
-         timestampString = "392506240.334229"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "210"
-         endingLineNumber = "210"
-         landmarkName = "-feedParserDidFinish:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Friendsy/Feed.m"
-         timestampString = "392506240.334229"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "195"
-         endingLineNumber = "195"
-         landmarkName = "-feedParserDidFinish:"
-         landmarkType = "5">
+         startingLineNumber = "274"
+         endingLineNumber = "274">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"

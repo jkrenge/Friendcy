@@ -61,6 +61,9 @@
     
     // activate input field
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [input_fancyName setText:[defaults objectForKey:UDUsername]];
+    
     [input_fancyName becomeFirstResponder];
     [input_fancyName setDelegate:self];
     
@@ -94,7 +97,7 @@
     // TODO: Check for valid username
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:username forKey:@"theFancyUsername"];
+    [defaults setObject:username forKey:UDUsername];
     [defaults synchronize];
     
     [_delegate didFinishUserInput:username];

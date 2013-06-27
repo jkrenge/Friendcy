@@ -27,10 +27,14 @@
         
         self.title = @"Friends";
         
+        // override user agent of browser
+        
+        NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:@"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3", @"UserAgent", nil];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+        
         // set up state
         
         _theFancyUsername = theFancyUsername;
-        _request = [NSURLRequest requestWithURL:[NSURL URLWithString:[[NSString stringWithFormat:@"http://m.thefancy.com/%@/following#continue", theFancyUsername] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]];
         _web = [[UIWebView alloc] init];
         
     }
@@ -78,7 +82,9 @@
     [_web setFrame:self.view.bounds];
     [self.view addSubview:_web];
     
-    [_web loadRequest:_request];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[[NSString stringWithFormat:@"http://m.fancy.com/%@/following", _theFancyUsername] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]];
+    
+    [_web loadRequest:request];
     
     ALog(@"");
     
@@ -92,27 +98,6 @@
 }
 
 #pragma mark - Jumping over login
-
-- (void)showManuallyGoBackToLoginButton
-{
-    
-    ALog(@"");
-    
-    // TODO: make button an arrow
-    
-    UIBarButtonItem *backBtn = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStylePlain target:self action:@selector(manuallyGoBackToLogin)];
-    [self.navigationItem setLeftBarButtonItem:backBtn];
-    
-}
-
-- (void)manuallyGoBackToLogin
-{
-    
-    ALog(@"");
-    
-    [_delegate manuallyGoBackToLogin];
-    
-}
 
 - (void)didTapBackButton:(id)sender
 {
@@ -130,13 +115,39 @@
     
     if ([self typeOfURL:url] == kIsFriendList) {
         
-        // TODO: show activity indicator
+        ALog(@"%@", url);
+        
+        // prepare activity indicator
+        
+        activityIndicator = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+        
+        [activityIndicator setLabelText:@"Loading..."];
+        [activityIndicator setMode:MBProgressHUDModeIndeterminate];
+        [activityIndicator setAnimationType:MBProgressHUDAnimationZoom];
+        
+        [self.navigationController.view addSubview:activityIndicator];
+        
+        [activityIndicator show:YES];
+        
+        ALog(@"load profile");
         
         return YES;
         
     } else {
         
         if ([self typeOfURL:url] == kIsProfile) {
+            
+            ack = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+            
+            [ack setLabelText:@"Added!"];
+            [ack setMode:MBProgressHUDModeCustomView];
+            [ack setCustomView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UIBarItem-check-white"]]];
+            [ack setAnimationType:MBProgressHUDAnimationZoom];
+            
+            [self.navigationController.view addSubview:ack];
+            
+            [ack show:YES];
+            [ack hide:YES afterDelay:0.5];
             
             ALog(@"%@", url);
             
@@ -158,7 +169,7 @@
     
     ALog(@"");
     
-    // TODO: hide activity indicator
+    [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
     
 }
 
@@ -179,7 +190,7 @@
     NSString *lastComponent = [urlComponents lastObject];
     
     // Friendlist url
-    if ([lastComponent isEqualToString:@"following#continue"]) return kIsFriendList;
+    if ([lastComponent isEqualToString:@"following"]) return kIsFriendList;
     
     // Invalid urls
     if ([lastComponent rangeOfString:@"signup"].location != NSNotFound) return kIsInvalid;

@@ -10,23 +10,25 @@
 
 #import "Defines.h"
 
+#import "MBProgressHUD.h"
+
 @protocol ProfileViewerDelegate <NSObject>
 - (void)selectedRSS:(NSString*)rss;
-- (void)manuallyGoBackToLogin;
 @end
 
 @interface ProfileViewer : UIViewController <UIWebViewDelegate>
 {
     
     NSString *_theFancyUsername;
-    NSURLRequest *_request;
     UIWebView *_web;
+    
+    MBProgressHUD *activityIndicator;
+    MBProgressHUD *ack;
     
 }
 
 @property (nonatomic, assign) id<ProfileViewerDelegate> delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil andUsername:(NSString*)theFancyUsername;
-- (void)showManuallyGoBackToLoginButton;
 
 @end
