@@ -306,7 +306,7 @@
 - (void)setItemImage:(NSString*)imageURL
 {
     
-    [image setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:gPlaceholderImage]];
+    [image setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage animatedImageNamed:@"LoadingAnim" duration:.7]];
     [image setupImageViewer];
     
 }

@@ -19,6 +19,8 @@
 
         self.title = @"Feeds";
         
+        feedToBeDeleted = nil;
+        
     }
     return self;
 }
@@ -38,6 +40,12 @@
     [btn addTarget:self action:@selector(presentOptions) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
     [self.navigationItem setRightBarButtonItem:barBtn];
+    
+    // detect long press on table view
+    
+    UILongPressGestureRecognizer *longPressRec = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
+    [longPressRec setMinimumPressDuration:1.];
+    [self.tableView addGestureRecognizer:longPressRec];
     
     // appearance of navigation bar
     
@@ -59,6 +67,31 @@
     [self.tableView setRowHeight:52.];
     [self.tableView setSeparatorColor:[UIColor clearColor]];
     [self.tableView setBackgroundColor:cDarkColor];
+    
+    // display help
+    
+    if (feeds.count == 0) {
+        
+        NSArray *coachMarks = @[
+                                @{
+                                    @"rect": [NSValue valueWithCGRect:(CGRect){{1,46},{233,53}}],
+                                    @"caption": @"You can add your close friends to your stream right here."
+                                    },
+                                @{
+                                    @"rect": [NSValue valueWithCGRect:(CGRect){{1,102},{233,116}}],
+                                    @"caption": @"Afterwards your friends will be listed here."
+                                    },
+                                @{
+                                    @"rect": [NSValue valueWithCGRect:(CGRect){{200,6},{32,32}}],
+                                    @"caption": @"For any additional info or settings go to options."
+                                    }
+                                ];
+        
+        WSCoachMarksView *coachMarksView = [[WSCoachMarksView alloc] initWithFrame:self.navigationController.view.bounds coachMarks:coachMarks];
+        [self.navigationController.view addSubview:coachMarksView];
+        [coachMarksView start];
+        
+    }
     
 }
 
@@ -96,6 +129,34 @@
     // reload
     
     [self.tableView reloadData];
+    
+}
+
+- (void)deleteFeedFromMenu:(NSString*)feed
+{
+    
+    // find feed in current set
+    int deleteIndex = [feeds indexOfObject:feed];
+    if (deleteIndex >= 0 && deleteIndex < feeds.count) {
+        
+        // animate
+        NSIndexPath *indexPathToRemove = [NSIndexPath indexPathForItem:deleteIndex+1 inSection:1];
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPathToRemove] withRowAnimation:UITableViewRowAnimationLeft];
+        
+        // delete from NSUserDefaults
+        [feeds removeObjectAtIndex:deleteIndex];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:feeds forKey:@"feeds"];
+        [defaults synchronize];
+        
+        // reload
+        [self.tableView endUpdates];
+        
+    }
+    
+    feedToBeDeleted = nil;
     
 }
 
@@ -175,6 +236,53 @@
         else [_delegate didSelectFeed:[feeds objectAtIndex:indexPath.row-1]];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:nToggleDrawer object:nil];
+        
+    }
+    
+}
+
+- (void)handleLongPressGesture:(UILongPressGestureRecognizer*)longPressRec
+{
+    
+    // calculate index path from tap
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:[longPressRec locationInView:self.tableView]];
+    
+    // call action if needed
+    
+    if (indexPath != nil && (indexPath.section > 0 && indexPath.row > 0)) {
+        
+        [self tableView:self.tableView didLongHoldRowAtIndexPath:indexPath];
+        
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView didLongHoldRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    if (feedToBeDeleted == nil) {
+        
+        NSString *nameOfFeed = [[feeds objectAtIndex:indexPath.row-1] stringByReplacingOccurrencesOfString:gRSSurlPrefix withString:@""];
+        feedToBeDeleted = [feeds objectAtIndex:indexPath.row-1];
+        
+        UIAlertView *deleteAlert = [[UIAlertView alloc] initWithTitle:@"Warning" message:[NSString stringWithFormat:@"Delete feed for user %@?", nameOfFeed] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+        [deleteAlert setTag:AlertViewTag_deleteFeed];
+        [deleteAlert show];
+        
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    
+    if (alertView.tag == AlertViewTag_deleteFeed) {
+        
+        if (buttonIndex) {
+            
+            [self deleteFeedFromMenu:[feedToBeDeleted copy]];
+            
+        }
         
     }
     

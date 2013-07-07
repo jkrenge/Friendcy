@@ -15,7 +15,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "MWFeedParser.h"
 #import "TSMiniWebBrowser.h"
-#import "MBProgressHUD.h"
+#import "WSCoachMarksView.h"
 
 #import "NSString+HTML.h"
 #import "NSDate+InternetDateTime.h"
@@ -34,7 +34,6 @@ typedef enum {
     NSDateFormatter *dateFormatter;
     
     UIRefreshControl *refreshControl;
-    MBProgressHUD *activityIndicator;
     int numOfTasks;
     PassthroughView *scrollShadow;
     NSInteger lastScrollOffset;

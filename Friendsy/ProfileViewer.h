@@ -11,6 +11,7 @@
 #import "Defines.h"
 
 #import "MBProgressHUD.h"
+#import "WSCoachMarksView.h"
 
 @protocol ProfileViewerDelegate <NSObject>
 - (void)selectedRSS:(NSString*)rss;

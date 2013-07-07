@@ -20,6 +20,7 @@
 #define gFeedCellHeight 280
 #define gFeedSeparatorHeight 12
 #define gPlaceholderImage @"FeedCellImagePlaceholder"
+#define gLoadingAnimImage @"LoadingAnim"
 
 // styling
 

@@ -291,6 +291,12 @@
                            wasModified:YES]];
     
     [frameworks addObject:[[FrameworkDescription alloc]
+                           framework:@"WSCoachMarksView"
+                           withUrl:@"https://github.com/workshirt/WSCoachMarksView"
+                           andDescription:@"Help screens"
+                           wasModified:YES]];
+    
+    [frameworks addObject:[[FrameworkDescription alloc]
                            framework:@"MBProgressHUD"
                            withUrl:@"https://github.com/michaelhenry/MHFacebookImageViewer"
                            andDescription:@"Full screen view for images"
@@ -313,15 +319,8 @@
                            withUrl:@"https://github.com/ucu072/HCPushBackAnimation"
                            andDescription:@"Depth animation for modals"
                            wasModified:NO]];
-    
-    [frameworks addObject:[[FrameworkDescription alloc]
-                           framework:@"BButton"
-                           withUrl:@"https://github.com/mattlawer/BButton"
-                           andDescription:@"Beautified buttons"
-                           wasModified:NO]];
 
     usedFrameworks = [frameworks copy];
-    
 }
 
 @end

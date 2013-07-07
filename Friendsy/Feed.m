@@ -109,6 +109,23 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     
+    if (feeds.count == 0) {
+        
+        // startup guide
+        
+        NSArray *coachMarks = @[
+                                @{
+                                    @"rect": [NSValue valueWithCGRect:(CGRect){{280,6},{32,32}}],
+                                    @"caption": @"To set up the app, please open the menu."
+                                    }
+                                ];
+        
+        WSCoachMarksView *coachMarksView = [[WSCoachMarksView alloc] initWithFrame:self.navigationController.view.bounds coachMarks:coachMarks];
+        [self.navigationController.view addSubview:coachMarksView];
+        [coachMarksView start];
+        
+    }
+    
     if (feedItems.count == 0) {
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -135,25 +152,14 @@
     
     if (feeds.count == 0) {
         
-        UIAlertView *noFeedsAlert = [[UIAlertView alloc] initWithTitle:@"No feeds" message:@"You didn't add anyone yet!" delegate:nil cancelButtonTitle:@"Oh, okay" otherButtonTitles:nil];
-        [noFeedsAlert show];
+//        UIAlertView *noFeedsAlert = [[UIAlertView alloc] initWithTitle:@"No feeds" message:@"You didn't add anyone yet!" delegate:nil cancelButtonTitle:@"Oh, okay" otherButtonTitles:nil];
+//        [noFeedsAlert show];
+        
+        [self refreshViewDidFinish];
         
         return;
         
     }
-    
-    // prepare activity indicator
-    
-    activityIndicator = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-    
-    [activityIndicator setLabelText:@"Refreshing stream..."];
-    [activityIndicator setMode:MBProgressHUDModeDeterminate];
-    [activityIndicator setProgress:.0];
-    [activityIndicator setAnimationType:MBProgressHUDAnimationZoom];
-    
-    [self.navigationController.view addSubview:activityIndicator];
-    
-    [activityIndicator show:YES];
     
     double delayInSeconds = 0.2;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -182,10 +188,6 @@
         
     });
     
-    // update progress
-    
-    [activityIndicator setProgress:activityIndicator.progress + (float)(1.0/(float)numOfTasks)];
-    
 }
 
 -(void)feedParser:(MWFeedParser *)parser didFailWithError:(NSError *)error
@@ -195,8 +197,6 @@
     
     NSString *finishedFeed = parser.url.description;
     [feedChecklist removeObject:finishedFeed];
-    
-    [activityIndicator setProgress:activityIndicator.progress + (float)(1.0/(float)numOfTasks)];
     
     [self feedParserCompleteParsing];
     
@@ -229,8 +229,6 @@
     
     NSString *finishedFeed = parser.url.description;
     [feedChecklist removeObject:finishedFeed];
-    
-    [activityIndicator setProgress:activityIndicator.progress + (float)(1.0/(float)numOfTasks)];
     
     [self feedParserCompleteParsing];
     
@@ -269,8 +267,6 @@
         }
         
         [self refreshViewDidFinish];
-        
-        [activityIndicator hide:YES];
         
     }
     
@@ -368,7 +364,7 @@
 - (void)shouldScrollToTop
 {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Nach oben scrollen?" message:nil delegate:self cancelButtonTitle:@"Abbrechen" otherButtonTitles:@"Nach oben", nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Scroll to top?" message:nil delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Go to top", nil];
     [alert setTag:AlertViewTag_scrollToTop];
     
     [alert show];
@@ -558,7 +554,7 @@
     if ([feed isEqualToString:@""]) [self loadFeeds];
     else feeds = [[NSMutableArray alloc] initWithObjects:feed, nil];
     
-    [self refreshView];
+    [self refreshViewShouldStart];
     
 }
 

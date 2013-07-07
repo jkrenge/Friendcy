@@ -108,14 +108,20 @@
 
 #pragma mark - UIWebView delegate
 
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    
+    ALog(@"");
+    
+}
+
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     
     NSString *url = request.URL.description;
+    ALog(@"%@", url);
     
     if ([self typeOfURL:url] == kIsFriendList) {
-        
-        ALog(@"%@", url);
         
         // prepare activity indicator
         
@@ -171,6 +177,17 @@
     
     [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
     
+    // check if this is the first time
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *firstTime = [defaults stringForKey:@"firstTime"];
+    
+    if (firstTime == nil || [firstTime isEqualToString:@"Yes"]) {
+        
+        [self showHelpForStage:0];
+        
+    }
+    
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -203,6 +220,49 @@
 }
 
 #pragma mark - Other
+
+- (void)showHelpForStage:(int)stage
+{
+    
+    NSArray *coachMarks;
+    
+    if (stage == 0) {
+        
+        coachMarks = @[
+                       @{
+                           @"rect": [NSValue valueWithCGRect:(CGRect){{160,0},{0,0}}],
+                           @"caption": @"Now that's a bit tricky... sorry about that."
+                           },
+                       @{
+                           @"rect": [NSValue valueWithCGRect:(CGRect){{39,205},{243,139}}],
+                           @"caption": @"First you have to confirm that you want to 'continue browsing'."
+                           }
+                       ];
+        
+    } else if (stage == 1) {
+        
+        coachMarks = @[
+                       @{
+                           @"rect": [NSValue valueWithCGRect:(CGRect){{3,124},{214,92}}],
+                           @"caption": @"This is basically your profile."
+                           },
+                       @{
+                           @"rect": [NSValue valueWithCGRect:(CGRect){{7,289},{131,40}}],
+                           @"caption": @"To add a friend to your stream, just tap his name or profile pic!"
+                           },
+                       @{
+                           @"rect": [NSValue valueWithCGRect:(CGRect){{280,6},{32,32}}],
+                           @"caption": @"When you're done, just close this view."
+                           }
+                       ];
+        
+    }
+    
+    WSCoachMarksView *coachMarksView = [[WSCoachMarksView alloc] initWithFrame:self.navigationController.view.bounds coachMarks:coachMarks];
+    [self.navigationController.view addSubview:coachMarksView];
+    [coachMarksView start];
+    
+}
 
 - (void)didReceiveMemoryWarning
 {

@@ -11,6 +11,10 @@
 #import "FriendAdder.h"
 #import "OptionsTable.h"
 
+#import "WSCoachMarksView.h"
+
+#define AlertViewTag_deleteFeed 1
+
 @protocol MenuDelegate <NSObject>
 - (void)didSelectFeed:(NSString*)feed;
 @end
@@ -19,8 +23,9 @@
 {
     
     NSMutableArray *feeds;
-    
+    NSString *feedToBeDeleted;
     int selectedStream;
+    
     
 }
 
